@@ -5,4 +5,6 @@ import { BootstrapService } from './bootstrap.service';
   providers: [BootstrapService],
   exports: [BootstrapService],
 })
-export class BootstrapModule {}
+export class BootstrapModule {
+  static forRoot() {}
+}
