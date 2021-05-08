@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BootConfig } from '@swft-nx/bootstrap';
+import { BootConfig } from '@swft-mt/bootstrap';
 
 @Injectable()
 export class AppService {

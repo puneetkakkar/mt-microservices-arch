@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@swft-nx/bootstrap": ["libs/bootstrap/src/index.ts"]
+      "@swft-mt/bootstrap": ["libs/bootstrap/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BootstrapModule } from '@swft-nx/bootstrap';
+import { BootstrapModule } from '@swft-mt/bootstrap';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
