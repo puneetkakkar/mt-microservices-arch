@@ -6,6 +6,7 @@ export class AppService {
   constructor(private readonly bootConfig: BootConfig) {}
 
   getData(): { message: string } {
-    return { message: 'Welcome to service-1!' };
+    const serviceName = this.bootConfig.get<string>('config.service.name');
+    return { message: `Welcome to  ${serviceName} !` };
   }
 }

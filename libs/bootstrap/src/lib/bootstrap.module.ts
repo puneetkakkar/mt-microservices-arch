@@ -1,11 +1,11 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
+import { BootstrapStore } from 'libs/bootstrap/src/lib/bootstrap.store';
 import { assign } from 'lodash';
 import { resolve } from 'path';
 import { BootConfigFileLoader } from './boot-config-file.loader';
 import { BootConfig } from './boot-config.class';
 import { BOOTSTRAP_CONFIGURATION_OPTIONS } from './bootstrap.constants';
-import { BootstrapDiscovery } from './bootstrap.discovery';
 import { BootstrapModuleOptions } from './interfaces/bootstrap-options.interface';
 
 @Module({
@@ -31,7 +31,7 @@ export class BootstrapModule {
         bootOptionsProvider,
         BootConfig,
         BootConfigFileLoader,
-        BootstrapDiscovery,
+        BootstrapStore,
       ],
       exports: [BootConfig],
     };
