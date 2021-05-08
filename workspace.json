@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "cli": {
+    "defaultCollection": "@nrwl/nest"
+  },
+  "defaultProject": "service-1",
+  "projects": {
+    "service-1": {
+      "root": "apps/service-1",
+      "sourceRoot": "apps/service-1/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/service-1",
+            "main": "apps/service-1/src/main.ts",
+            "tsConfig": "apps/service-1/tsconfig.app.json",
+            "assets": [
+              "apps/service-1/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/service-1/src/environments/environment.ts",
+                  "with": "apps/service-1/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "service-1:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/service-1/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/service-1"
+          ],
+          "options": {
+            "jestConfig": "apps/service-1/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "service-2": {
+      "root": "apps/service-2",
+      "sourceRoot": "apps/service-2/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/service-2",
+            "main": "apps/service-2/src/main.ts",
+            "tsConfig": "apps/service-2/tsconfig.app.json",
+            "assets": [
+              "apps/service-2/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/service-2/src/environments/environment.ts",
+                  "with": "apps/service-2/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "service-2:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/service-2/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/service-2"
+          ],
+          "options": {
+            "jestConfig": "apps/service-2/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "bootstrap": {
+      "root": "libs/bootstrap",
+      "sourceRoot": "libs/bootstrap/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/bootstrap/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/bootstrap"
+          ],
+          "options": {
+            "jestConfig": "libs/bootstrap/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  }
+}
