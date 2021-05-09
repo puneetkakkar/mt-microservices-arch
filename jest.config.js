@@ -4,5 +4,6 @@ module.exports = {
     '<rootDir>/apps/service-2',
     '<rootDir>/libs/bootstrap',
     '<rootDir>/libs/common',
+    '<rootDir>/libs/consul',
   ],
 };

@@ -15,6 +15,7 @@
     "service-1": { "tags": [] },
     "service-2": { "tags": [] },
     "bootstrap": { "tags": [] },
-    "common": { "tags": [] }
+    "common": { "tags": [] },
+    "consul": { "tags": [] }
   }
 }
