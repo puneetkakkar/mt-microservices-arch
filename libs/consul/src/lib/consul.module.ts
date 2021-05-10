@@ -1,9 +1,10 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { ConsulClient } from './consul.client';
 import { ConsulConfig } from './consul.config';
 import { CONSUL_CONFIG_OPTIONS } from './consul.constants';
 import { ConsulModuleOptions } from './interfaces/consul-module.options';
 
+@Global()
 @Module({
   controllers: [],
   providers: [],

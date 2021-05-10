@@ -17,7 +17,8 @@
     "paths": {
       "@swft-mt/bootstrap": ["libs/bootstrap/src/index.ts"],
       "@swft-mt/common": ["libs/common/src/index.ts"],
-      "@swft-mt/consul": ["libs/consul/src/index.ts"]
+      "@swft-mt/consul": ["libs/consul/src/index.ts"],
+      "@swft-mt/cloud": ["libs/cloud/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

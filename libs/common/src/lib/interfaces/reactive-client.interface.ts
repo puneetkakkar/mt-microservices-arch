@@ -3,3 +3,9 @@ export interface IReactiveClient<C> {
 
   close(): void | Promise<void>;
 }
+
+export interface BaseClientOptions {
+  debug?: boolean;
+  retryAttempts?: number;
+  retryDelays?: number;
+}

@@ -195,6 +195,31 @@
           }
         }
       }
+    },
+    "cloud": {
+      "root": "libs/cloud",
+      "sourceRoot": "libs/cloud/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/cloud/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/cloud"
+          ],
+          "options": {
+            "jestConfig": "libs/cloud/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }

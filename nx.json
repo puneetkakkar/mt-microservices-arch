@@ -16,6 +16,7 @@
     "service-2": { "tags": [] },
     "bootstrap": { "tags": [] },
     "common": { "tags": [] },
-    "consul": { "tags": [] }
+    "consul": { "tags": [] },
+    "cloud": { "tags": [] }
   }
 }

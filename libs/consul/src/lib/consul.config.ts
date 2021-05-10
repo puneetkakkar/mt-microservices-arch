@@ -14,7 +14,7 @@ export class ConsulConfig implements OnModuleInit {
     @Optional() private readonly bootConfig: BootConfig
   ) {}
 
-  get config() {
+  get config(): ConsulModuleOptions {
     return this.options;
   }
 

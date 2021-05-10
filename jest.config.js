@@ -5,5 +5,6 @@ module.exports = {
     '<rootDir>/libs/bootstrap',
     '<rootDir>/libs/common',
     '<rootDir>/libs/consul',
+    '<rootDir>/libs/cloud',
   ],
 };
