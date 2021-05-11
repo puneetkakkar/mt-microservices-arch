@@ -20,6 +20,8 @@ import { AppService } from './app.service';
     ConsulModule.forRoot({
       host: 'localhost',
       port: '8500',
+      promisify: true,
+      secure: false,
     }),
     BootstrapModule.forRoot(),
   ],

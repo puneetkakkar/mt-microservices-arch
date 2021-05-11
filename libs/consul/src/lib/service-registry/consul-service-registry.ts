@@ -1,4 +1,10 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import {
   Registration,
   SERVICE_REGISTRY_CONFIG,
@@ -18,7 +24,7 @@ import retry = require('retry');
 import RegisterOptions = Consul.Agent.Service.RegisterOptions;
 
 @Injectable()
-export class ConsulServiceRegistry implements OnModuleInit {
+export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
   registration: Registration<Service>;
   ttlScheduler?: TtlScheduler;
   watcher: Watch;
@@ -130,6 +136,28 @@ export class ConsulServiceRegistry implements OnModuleInit {
     });
   }
 
+  async deregister(): Promise<void> {
+    Logger.log(
+      `Deregistering service with consul: ${this.registration.getInstanceId()}`
+    );
+
+    try {
+      this.ttlScheduler?.remove(this.registration.getInstanceId());
+
+      const options = {
+        id: this.registration.getInstanceId(),
+        ...this.getToken(),
+      };
+
+      await this.client.consul.agent.service.deregister(options);
+      Logger.log(
+        `Deregistered service with consul: ${this.registration.getInstanceId()}`
+      );
+    } catch (e) {
+      Logger.error(e);
+    }
+  }
+
   // private async buildServicesStore(services: string[]) {
   //   this.watchers.forEach((watcher) => watcher.end());
   //   this.watchers = new Map();
@@ -170,5 +198,9 @@ export class ConsulServiceRegistry implements OnModuleInit {
     } catch (error) {
       Logger.error(error);
     }
+  }
+
+  async onModuleDestroy() {
+    await this.deregister();
   }
 }

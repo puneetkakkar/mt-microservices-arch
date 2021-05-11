@@ -27,6 +27,19 @@ export class TtlScheduler {
     tasks.set(instanceId, taskId);
   }
 
+  /**
+   * remove a service from the checks loop
+   * 
+   * @param instanceId 
+   */
+  remove(instanceId: string): void {
+    const taskId = tasks.get(instanceId);
+    if (taskId) {
+      clearInterval(taskId);
+    }
+    tasks.delete(instanceId);
+  }
+
   private computeHeartbeatInterval(): number {
     const intervalRatio = 2.0 / 3.0;
     const interval = (this.heartbeatOptions.ttlInSeconds || 60) * intervalRatio;
