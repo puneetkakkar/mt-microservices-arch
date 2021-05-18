@@ -1,4 +1,6 @@
-import { DiscoveryOptions, HeartbeatOptions, Service } from '@swft-mt/common';
+import { DiscoveryOptions } from './discovery-options.interface';
+import { HeartbeatOptions } from './heartbeat-options.interface';
+import { Service } from './service.interface';
 
 export interface BaseRegistryOption {
   service: Omit<Service, 'checks' | 'region'>;

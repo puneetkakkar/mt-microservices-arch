@@ -1,5 +1,6 @@
-import { PlainObject, Registration } from '@swft-mt/common';
+import { PlainObject } from '@swft-mt/common';
 import { ConsulDiscoveryOptions, Service } from '../interfaces';
+import { Registration } from '../interfaces/registration.interface';
 
 export class ConsulRegistration implements Registration<Service> {
   private newService: Service;

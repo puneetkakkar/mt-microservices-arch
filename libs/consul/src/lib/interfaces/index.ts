@@ -2,4 +2,8 @@ export * from './consul-discovery.options';
 export * from './consul-module.options';
 export * from './consul-registry.options';
 export * from './consul.interface';
+export * from './heartbeat-task.interface';
 export * from './heartbeat.interface';
+export * from './registration.interface';
+export * from './service-instance.interface';
+export * from './service-registry-builder.interface';

@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
-import { HeartbeatOptions } from '../client';
 import { HeartbeatTask } from '../interfaces';
+import { HeartbeatOptions } from '../interfaces/heartbeat.interface';
 
 const tasks = new Map<string, any>();
 
@@ -29,8 +29,8 @@ export class TtlScheduler {
 
   /**
    * remove a service from the checks loop
-   * 
-   * @param instanceId 
+   *
+   * @param instanceId
    */
   remove(instanceId: string): void {
     const taskId = tasks.get(instanceId);

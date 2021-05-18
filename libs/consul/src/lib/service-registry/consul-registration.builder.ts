@@ -1,9 +1,10 @@
-import { IpUtils, PlainObject, RegistrationBuilder } from '@swft-mt/common';
+import { IpUtils, PlainObject } from '@swft-mt/common';
 import * as uuid from 'uuid';
 import {
   Check,
   ConsulDiscoveryOptions,
   HeartbeatOptions,
+  RegistrationBuilder,
   Service,
 } from '../interfaces';
 import { ConsulRegistration } from './consul-registration';

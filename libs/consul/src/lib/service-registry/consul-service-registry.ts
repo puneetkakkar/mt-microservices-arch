@@ -5,20 +5,19 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import {
-  Registration,
-  SERVICE_REGISTRY_CONFIG,
-  TtlScheduler,
-} from '@swft-mt/common';
+import { SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
 import * as consul from 'consul';
 import * as Consul from 'consul';
 import { Watch } from 'consul';
 import { isNil, isUndefined, omitBy } from 'lodash';
 import { ConsulClient } from '../consul.client';
-import { ConsulHeartbeatTask } from '../discovery/consul-heartbeat.task';
 import { Service } from '../interfaces';
 import { ConsulRegistryOptions } from '../interfaces/consul-registry.options';
+import { Registration } from '../interfaces/registration.interface';
+import { ConsulHeartbeatTask } from '../service-discovery/consul-heartbeat.task';
+import { TtlScheduler } from '../service-health/ttl-scheduler';
 import { ConsulRegistrationBuilder } from './consul-registration.builder';
+
 import retry = require('retry');
 
 import RegisterOptions = Consul.Agent.Service.RegisterOptions;

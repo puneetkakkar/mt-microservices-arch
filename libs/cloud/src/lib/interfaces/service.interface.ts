@@ -1,5 +1,5 @@
-import { PlainObject } from '../../utils';
-import { DiscoveryOptions } from './discovery.interface';
+import { DiscoveryOptions } from './discovery-options.interface';
+import { PlainObject } from '@swft-mt/common';
 
 export interface Service {
   name: string;
