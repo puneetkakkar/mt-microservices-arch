@@ -6,5 +6,6 @@ module.exports = {
     '<rootDir>/libs/common',
     '<rootDir>/libs/consul',
     '<rootDir>/libs/cloud',
+    '<rootDir>/libs/loadbalancer',
   ],
 };

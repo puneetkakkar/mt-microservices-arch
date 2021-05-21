@@ -17,6 +17,7 @@
     "bootstrap": { "tags": [] },
     "common": { "tags": [] },
     "consul": { "tags": [] },
-    "cloud": { "tags": [] }
+    "cloud": { "tags": [] },
+    "loadbalancer": { "tags": [] }
   }
 }

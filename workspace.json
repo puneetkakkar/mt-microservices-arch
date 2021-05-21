@@ -220,6 +220,31 @@
           }
         }
       }
+    },
+    "loadbalancer": {
+      "root": "libs/loadbalancer",
+      "sourceRoot": "libs/loadbalancer/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/loadbalancer/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/loadbalancer"
+          ],
+          "options": {
+            "jestConfig": "libs/loadbalancer/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   }
 }
