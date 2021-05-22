@@ -5,17 +5,18 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
+import { ServiceStore, SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
 import * as consul from 'consul';
 import * as Consul from 'consul';
 import { Watch } from 'consul';
-import { isNil, isUndefined, omitBy } from 'lodash';
+import { isUndefined, omitBy } from 'lodash';
 import { ConsulClient } from '../consul.client';
 import { Service } from '../interfaces';
 import { ConsulRegistryOptions } from '../interfaces/consul-registry.options';
 import { Registration } from '../interfaces/registration.interface';
 import { ConsulHeartbeatTask } from '../service-discovery/consul-heartbeat.task';
 import { TtlScheduler } from '../service-health/ttl-scheduler';
+import { consulServiceToServiceInstance } from '../utils/consul.utils';
 import { ConsulRegistrationBuilder } from './consul-registration.builder';
 
 import retry = require('retry');
@@ -34,16 +35,17 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
   constructor(
     @Inject(SERVICE_REGISTRY_CONFIG)
     private readonly options: ConsulRegistryOptions,
-    private readonly client: ConsulClient
+    private readonly client: ConsulClient,
+    private readonly serviceStore: ServiceStore
   ) {}
 
   async init() {
-    if (isNil(this.options.heartbeat)) {
-      throw Error('Heartbeat options is required.');
+    if (this.options.heartbeat == null) {
+      throw Error('HeartbeatOptions is required');
     }
 
-    if (isNil(this.options.discovery)) {
-      throw Error('Consul discovery options is required.');
+    if (this.options.discovery == null) {
+      throw Error('ConsulDiscoveryOptions is required.');
     }
 
     this.registration = new ConsulRegistrationBuilder()
@@ -64,16 +66,15 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
         this.client,
         this.registration.getInstanceId()
       );
-
       this.ttlScheduler = new TtlScheduler(this.options.heartbeat, task);
     }
 
-    //watch for service change
-    // this.watchAll();
+    // watch for service change
+    this.watchAll();
   }
 
   private getToken(): { token?: string } {
-    return this.client.options.config?.aclToken
+    return this.client.options.config.aclToken
       ? { token: this.client.options.config.aclToken }
       : {};
   }
@@ -94,7 +95,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
 
   private async _internalRegister(): Promise<void> {
     Logger.log(
-      `Registering service with id : ${this.registration.getInstanceId()}`
+      `registering service with id: ${this.registration.getInstanceId()}`
     );
 
     const service = this.generateService();
@@ -102,13 +103,13 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
 
     if (
       this.options.heartbeat.enabled &&
-      this.ttlScheduler !== null &&
-      service.check?.ttl !== null
+      this.ttlScheduler != null &&
+      service.check?.ttl != null
     ) {
       this.ttlScheduler.add(this.registration.getInstanceId());
     }
 
-    Logger.log('Service is registered');
+    Logger.log('service registered');
   }
 
   async register(): Promise<any> {
@@ -120,12 +121,11 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
           resolve(null);
         } catch (e) {
           if (this.options.discovery.failFast) {
-            Logger.log(
-              `Fail fast is false. Error registering service with consul: ${this.registration.getService()}`
+            Logger.warn(
+              `Fail fast is false. Error registering service with consul: ${this.registration.getService()} ${e}`
             );
             reject(e);
           }
-
           if (operation.retry(e)) {
             return;
           }
@@ -147,7 +147,6 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
         id: this.registration.getInstanceId(),
         ...this.getToken(),
       };
-
       await this.client.consul.agent.service.deregister(options);
       Logger.log(
         `Deregistered service with consul: ${this.registration.getInstanceId()}`
@@ -157,45 +156,73 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // private async buildServicesStore(services: string[]) {
-  //   this.watchers.forEach((watcher) => watcher.end());
-  //   this.watchers = new Map();
+  private async buildServiceStore(services: string[]) {
+    this.watchers.forEach((watcher) => watcher.end());
+    this.watchers = new Map();
 
-  //   await Promise.all(
-  //     services.map(async (service: string) => {
-  //       const nodes = (await this.client.consul.health.service(
-  //         service
-  //       )) as any[];
-  //       // const serviceNodes = consulServiceToServiceInstance(nodes);
-  //     })
-  //   );
-  // }
+    await Promise.all(
+      services.map(async (service: string) => {
+        const nodes = (await this.client.consul.health.service(
+          service
+        )) as any[];
+        const serviceNodes = consulServiceToServiceInstance(nodes);
+        this.serviceStore.setServices(service, serviceNodes);
+        this.watch(service);
+      })
+    );
+  }
 
-  // private watchAll() {
-  //   if (!this.client.consul) {
-  //     return;
-  //   }
+  private watch(serviceName: string) {
+    if (!this.client.consul) {
+      return;
+    }
 
-  //   this.watcher = this.client.consul.watch({
-  //     method: this.client.consul.catalog.service.list,
-  //     options: {
-  //       timeout: this.WATCH_TIMEOUT,
-  //       wait: '5ms',
-  //     },
-  //   });
+    if (this.watchers[serviceName]) {
+      this.watchers[serviceName].end();
+    }
 
-  //   this.watcher.on('change', async (data) => {
-  //     const services = Object.keys(data).filter((value) => value !== 'consul');
-  //     await this.buildServicesStore(services);
-  //   });
-  // }
+    this.watchers[serviceName] = this.client.consul.watch({
+      method: this.client.consul.health.service,
+      options: {
+        timeout: this.WATCH_TIMEOUT,
+        service: serviceName,
+        wait: '5m',
+        ...this.getToken(),
+      },
+    });
+    const watcher = this.watchers[serviceName];
+
+    watcher.on('change', (nodes) => {
+      const serviceNodes = consulServiceToServiceInstance(nodes);
+      this.serviceStore.setServices(serviceName, serviceNodes);
+    });
+  }
+
+  private watchAll() {
+    if (!this.client.consul) {
+      return;
+    }
+
+    this.watcher = this.client.consul.watch({
+      method: this.client.consul.catalog.service.list,
+      options: {
+        timeout: this.WATCH_TIMEOUT,
+        wait: '5m',
+      },
+    });
+
+    this.watcher.on('change', async (data) => {
+      const svcs = Object.keys(data).filter((value) => value !== 'consul');
+      await this.buildServiceStore(svcs);
+    });
+  }
 
   async onModuleInit() {
     try {
-      this.init();
-      this.register();
-    } catch (error) {
-      Logger.error(error);
+      await this.init();
+      await this.register();
+    } catch (e) {
+      Logger.error(e);
     }
   }
 

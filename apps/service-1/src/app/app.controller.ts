@@ -14,11 +14,9 @@ export class AppController {
     return this.appService.getData();
   }
 
-  @Get('/hit-service-2')
-  async hitAnotherService() {
-    const otherSvc = await this.serviceInstance.get('/');
-    console.log('OTHER_SERVICE', otherSvc.body);
-
-    return otherSvc.body;
+  @Get('/service-2')
+  async getServiceData() {
+    const svcData = await this.serviceInstance.get('api/');
+    return svcData.body;
   }
 }

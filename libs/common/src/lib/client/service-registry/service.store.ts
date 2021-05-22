@@ -5,6 +5,7 @@ import { ServiceInstance } from '../../interfaces/service-instance.interface';
 
 export class ServiceStore extends EventEmitter implements OnModuleDestroy {
   private readonly services: Map<string, ServiceInstance[]> = new Map();
+  private eventName = 'change';
 
   getServiceNames(): string[] {
     const names: string[] = [];
@@ -24,5 +25,26 @@ export class ServiceStore extends EventEmitter implements OnModuleDestroy {
     return nodes;
   }
 
-  onModuleDestroy() {}
+  setServices(name: string, services: ServiceInstance[]): void {
+    this.services.set(name, services || []);
+    this.emit(this.eventName, 'added', name, services);
+  }
+
+  close(): void {
+    this.removeAllListeners(this.eventName);
+  }
+
+  watch(
+    callback: (
+      type: 'added' | 'removed',
+      name: string,
+      service: ServiceInstance[]
+    ) => void
+  ): void {
+    this.on(this.eventName, callback);
+  }
+
+  onModuleDestroy() {
+    this.close();
+  }
 }

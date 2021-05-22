@@ -28,7 +28,7 @@ import { AppService } from './app.service';
     }),
     ClientModule.forRoot(),
     LoadBalancerModule.forRoot({
-      services: [{ strategy: 'RandomStrategy', name: 'service-1' }],
+      services: [{ strategy: 'RandomStrategy', name: 'service-2' }],
     }),
   ],
   controllers: [AppController],

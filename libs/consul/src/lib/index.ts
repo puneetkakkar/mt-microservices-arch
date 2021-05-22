@@ -5,3 +5,4 @@ export * from './interfaces';
 export * from './service-discovery';
 export * from './service-registry';
 export * from './utils';
+export * from './default-service-instance';

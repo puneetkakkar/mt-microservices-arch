@@ -1,16 +1,20 @@
+import { HealthCheck } from './health-check';
+import { Retry } from './retry.config';
+import { StickySession } from './sticky-session';
+
 export class LoadBalancerProperties {
   /**
-   * Properties for HealthCheckServiceInstanceListSupplier
+   * Properties for <code>HealthCheckServiceInstanceListSupplier</code>.
    */
-  healthCheck: any;
+  healthCheck: HealthCheck = new HealthCheck();
 
   /**
    * Properties for Spring-Retry and Reactor Retry support in Spring Cloud LoadBalancer.
    */
-  retry: any;
+  retry: Retry = new Retry();
 
   /**
    * Properties for LoadBalancer sticky-session.
    */
-  stickySession: any;
+  stickySession: StickySession = new StickySession();
 }

@@ -6,6 +6,9 @@ import { LOAD_BALANCE_CONFIG_OPTIONS } from './loadbalancer.constants';
 
 @Injectable()
 export class LoadBalancerConfig implements OnModuleInit {
+  private options: LoadBalancerModuleOptions = {
+    strategy: 'RandomStrategy',
+  };
   private CONFIG_PREFIX = 'loadbalancer';
 
   constructor(
@@ -14,11 +17,11 @@ export class LoadBalancerConfig implements OnModuleInit {
     @Optional() private readonly bootConfig: BootConfig
   ) {}
 
-  private options: LoadBalancerModuleOptions = {
-    strategy: 'RandomStrategy',
-  };
+  get config(): LoadBalancerModuleOptions {
+    return this.options;
+  }
 
-  public getServiceOption() {
+  public getServicesOption() {
     return this.options?.services || [];
   }
 
@@ -27,7 +30,7 @@ export class LoadBalancerConfig implements OnModuleInit {
   }
 
   public getStrategy(serviceName: string) {
-    const serviceOptions = this.getServiceOption();
+    const serviceOptions = this.getServicesOption();
     const serviceOption = serviceOptions.filter((item) => {
       return item.name === serviceName;
     })[0];
@@ -35,7 +38,6 @@ export class LoadBalancerConfig implements OnModuleInit {
     if (!serviceOption) {
       return this.getGlobalStrategy();
     }
-
     return serviceOption.strategy;
   }
 

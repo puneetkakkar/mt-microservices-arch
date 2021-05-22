@@ -29,6 +29,9 @@ export class LoadBalancerClient
 
   private init() {
     this.updateServices();
+    this.serviceStore.watch(() => {
+      this.updateServices();
+    });
   }
 
   private updateServices() {
@@ -77,15 +80,10 @@ export class LoadBalancerClient
     return strategy;
   }
 
-  /**
-   * Execute request
-   * @param serviceId
-   * @param request
-   */
   execute<T>(serviceId: string, request: LoadBalancerRequest<T>): T;
   execute<T>(
     serviceId: string,
-    nodes: ServiceInstance,
+    node: ServiceInstance,
     request: LoadBalancerRequest<T>
   ): T;
   async execute<T>(

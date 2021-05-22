@@ -1,26 +1,26 @@
 export class HealthCheck {
   /**
-   * Initial delay value for the Health Check scheduler
+   * Initial delay value for the HealthCheck scheduler.
    */
   initialDelay = 0;
 
   /**
-   * Interval for rerunning the Health Check scheduler
+   * Interval for rerunning the HealthCheck scheduler.
    */
   interval = 25000;
 
   /**
-   * Interval for refetching available service instance
+   * Interval for refetching available service instances.
    */
-  refetchInstanceInterval = 25000;
+  refetchInstancesInterval = 25000;
 
   path: Map<String, String> = new Map();
 
   /**
    * Indicates whether the instances should be refetched by the
    * <code>HealthCheckServiceInstanceListSupplier</code>. This can be used if the
-   * instance can be updated and the underlying delegates does not provide
-   * an ongoing flux.
+   * instances can be updated and the underlying delegate does not provide an
+   * ongoing flux.
    */
   refetchInstances = false;
 

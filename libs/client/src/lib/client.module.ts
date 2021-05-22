@@ -7,7 +7,6 @@ import { MetadataAccessor } from './metadata.accessor';
 @Module({
   imports: [DiscoveryModule],
   providers: [MetadataAccessor, ClientOrchestrator],
-  exports: [],
 })
 export class ClientModule {
   static forRoot(): DynamicModule {
