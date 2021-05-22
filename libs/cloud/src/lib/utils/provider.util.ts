@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
+import { ServiceStore, SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
 import { RegistryConfiguration } from '../interfaces';
 import { validateRegistryOptions } from './validate-registry-options.util';
 
@@ -30,6 +30,7 @@ export function getSharedProviderUtils(
   }
 
   sharedProviders.push(configProvider);
+  sharedProviders.push(ServiceStore);
 
   return sharedProviders;
 }

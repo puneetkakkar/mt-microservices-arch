@@ -1,7 +1,8 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { CloudModuleOptions } from './interfaces';
 import { getSharedProviderUtils } from './utils';
 
+@Global()
 @Module({
   imports: [],
   controllers: [],
@@ -16,6 +17,7 @@ export class CloudModule {
       module: CloudModule,
       providers: sharedProviders,
       exports: sharedProviders,
+      global: true,
     };
   }
 }

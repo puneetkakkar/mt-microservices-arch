@@ -1,9 +1,10 @@
-import { Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { getMetadataStorage, ServiceInstance } from '@swft-mt/common';
 import { ClassWithArgs } from '../../../common/src/lib/meta-store/class-type.interface';
 import { BaseStrategy } from './base.strategy';
 import { StrategyRegistry } from './strategy.registry';
 
+@Injectable()
 export class StrategyDiscovery implements OnModuleInit {
   constructor(private readonly strategyRegistry: StrategyRegistry) {}
 

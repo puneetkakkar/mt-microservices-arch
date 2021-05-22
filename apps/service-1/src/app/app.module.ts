@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { BootstrapModule } from '@swft-mt/bootstrap';
 import { CloudModule } from '@swft-mt/cloud';
 import { ConsulModule } from '@swft-mt/consul';
+import { LoadBalancerModule } from '@swft-mt/loadbalancer';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
   imports: [
+    BootstrapModule.forRoot(),
     CloudModule.forRoot({
       registry: {
         discoverer: 'consul',
@@ -23,7 +25,9 @@ import { AppService } from './app.service';
       promisify: true,
       secure: false,
     }),
-    BootstrapModule.forRoot(),
+    LoadBalancerModule.forRoot({
+      services: [{ strategy: 'RandomStrategy', name: 'service-1' }],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
