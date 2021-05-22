@@ -122,6 +122,7 @@ export class LoadBalancerClient
       const firstReq = req.arguments[0];
       const path = req.arguments[1];
       const opts = req.arguments[2];
+
       const response = await firstReq(path, opts);
 
       if (node) {

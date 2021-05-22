@@ -19,7 +19,8 @@
       "@swft-mt/common": ["libs/common/src/index.ts"],
       "@swft-mt/consul": ["libs/consul/src/index.ts"],
       "@swft-mt/cloud": ["libs/cloud/src/index.ts"],
-      "@swft-mt/loadbalancer": ["libs/loadbalancer/src/index.ts"]
+      "@swft-mt/loadbalancer": ["libs/loadbalancer/src/index.ts"],
+      "@swft-mt/client": ["libs/client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

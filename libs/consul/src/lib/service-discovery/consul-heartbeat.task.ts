@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
-import { HeartbeatTask } from '@swft-mt/common';
 import { ConsulClient } from '../consul.client';
+import { HeartbeatTask } from '../interfaces';
 
 export class ConsulHeartbeatTask implements HeartbeatTask {
   private readonly checkId: string;

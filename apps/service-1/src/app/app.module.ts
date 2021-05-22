@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BootstrapModule } from '@swft-mt/bootstrap';
+import { ClientModule } from '@swft-mt/client';
 import { CloudModule } from '@swft-mt/cloud';
 import { ConsulModule } from '@swft-mt/consul';
 import { LoadBalancerModule } from '@swft-mt/loadbalancer';
@@ -25,6 +26,7 @@ import { AppService } from './app.service';
       promisify: true,
       secure: false,
     }),
+    ClientModule.forRoot(),
     LoadBalancerModule.forRoot({
       services: [{ strategy: 'RandomStrategy', name: 'service-1' }],
     }),

@@ -18,6 +18,7 @@
     "common": { "tags": [] },
     "consul": { "tags": [] },
     "cloud": { "tags": [] },
-    "loadbalancer": { "tags": [] }
+    "loadbalancer": { "tags": [] },
+    "client": { "tags": [] }
   }
 }
