@@ -29,7 +29,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
   ttlScheduler?: TtlScheduler;
   watcher: Watch;
 
-  private readonly WATCH_TIMEOUT = 305000;
+  private readonly WATCH_TIMEOUT = 360000;
   private watchers: Map<string, Watch> = new Map();
 
   constructor(
