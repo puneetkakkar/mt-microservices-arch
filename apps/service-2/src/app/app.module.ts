@@ -12,10 +12,9 @@ import { AppService } from './app.service';
       registry: {
         discoverer: 'consul',
         service: {
-          id: 'service-2',
           name: 'service-2',
           address: 'localhost',
-          port: 3334,
+          port: parseInt(process.env.PORT) || 3334,
         },
       },
     }),

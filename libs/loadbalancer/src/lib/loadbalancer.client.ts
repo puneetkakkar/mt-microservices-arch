@@ -38,15 +38,15 @@ export class LoadBalancerClient
     const services = this.serviceStore.getServiceNames();
     for (const service of services) {
       const nodes = this.serviceStore.getServiceNodes(service);
-      if (!service || this.serviceStrategies.has(service)) {
+      if (!service) {
         continue;
       }
 
       const strategyName = this.properties.getStrategy(service);
-      const strategy = this.registry.getStrategy(strategyName);
-
-      if (strategy) {
-        this.createStrategy(service, nodes, strategy);
+      const StrategyClass = this.registry.getStrategy(strategyName);
+      
+      if (StrategyClass) {
+        this.createStrategy(service, nodes, StrategyClass);
       }
     }
   }
@@ -54,10 +54,16 @@ export class LoadBalancerClient
   private createStrategy(
     serviceName: string,
     nodes: ServiceInstance[],
-    strategy: BaseStrategy<any>
+    StrategyClass: any
   ) {
-    strategy.init(serviceName, new ServiceInstancePool(serviceName, nodes));
-    this.serviceStrategies.set(serviceName, strategy);
+    const strategyInstance = (new StrategyClass() as unknown) as BaseStrategy<ServiceInstance>;
+
+    strategyInstance.init(
+      serviceName,
+      new ServiceInstancePool(serviceName, nodes)
+    );
+
+    this.serviceStrategies.set(serviceName, strategyInstance);
   }
 
   choose(serviceId: string): ServiceInstance {

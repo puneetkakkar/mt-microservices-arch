@@ -143,6 +143,11 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     try {
       this.ttlScheduler?.remove(this.registration.getInstanceId());
 
+      this.serviceStore.removeServiceNode(
+        this.registration.getServiceId(),
+        this.registration.getInstanceId()
+      );
+
       const options = {
         id: this.registration.getInstanceId(),
         ...this.getToken(),
