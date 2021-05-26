@@ -39,8 +39,6 @@ export class ServiceStore extends EventEmitter implements OnModuleDestroy {
   }
 
   removeServiceNode(serviceName: string, nodeId: string): void {
-    Logger.log(`REMOVE_SERVICE_NNODE - ${serviceName}`);
-
     try {
       if (this.services.has(serviceName)) {
         if (this.services.get(serviceName).length === 1) {
