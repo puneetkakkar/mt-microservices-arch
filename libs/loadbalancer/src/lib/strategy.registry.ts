@@ -12,7 +12,8 @@ export class StrategyRegistry {
     }
   }
 
-  public getStrategy(name: string): any | undefined {
+  public getStrategy(name: string): BaseStrategy<ServiceInstance> | undefined {
+    const strategy = this.strategies.get(name);
     return this.strategies.get(name);
   }
 }

@@ -11,6 +11,10 @@ export class RandomStrategy extends BaseStrategy<ServiceInstance> {
   private serviceId: String;
   private serviceInstanceList: ServiceInstancePool;
 
+  get strategyServiceId() {
+    return this.serviceId;
+  }
+
   init(serviceName: string, list: ServiceInstancePool) {
     this.serviceId = serviceName;
     this.serviceInstanceList = list;
