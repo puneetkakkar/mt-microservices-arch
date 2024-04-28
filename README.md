@@ -18,7 +18,7 @@ Software features
 - ✅ Multi Tenancy
 - ✅ Security
 - ✅ Service Discovery (Default on Consul)
-- ❌ (WiP) Documentation
+- ❌ (WIP) Documentation
 
 ## Software stack
 
