@@ -19,8 +19,6 @@
       }
     }
   },
-  "cli": {
-    "defaultCollection": "@nrwl/nest"
-  },
-  "defaultProject": "service-1"
+  "defaultProject": "service-1",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }
