@@ -1,0 +1,97 @@
+diff --git a/node_modules/@types/consul/index.d.ts b/node_modules/@types/consul/index.d.ts
+index e8afcf2..aa1fc26 100755
+--- a/node_modules/@types/consul/index.d.ts
++++ b/node_modules/@types/consul/index.d.ts
+@@ -8,7 +8,7 @@
+ 
+ 
+ 
+-import { IncomingMessage as HttpIncomingMessage } from "http";
++import { IncomingMessage as HttpIncomingMessage } from 'http';
+ 
+ declare namespace Consul {
+ 
+@@ -156,6 +156,23 @@ declare namespace Consul {
+                 ttl?: string | undefined;
+                 notes?: string | undefined;
+                 status?: string | undefined;
++                tls_skip_verify?: boolean;
++                shell?: string;
++                tcp?: string;
++                deregister_critical_service_after?: string;
++                alias_node?: string;
++                alias_service?: string;
++                docker_container_id?: string;
++                grpc?: string;
++                args?: string[];
++                grpc_use_tls?: boolean;
++                method?: string;
++                body?: string;
++                header?: Map<string, string>;
++                timeout: string;
++                output_max_size?: number;
++                success_before_passing?: number;
++                failures_before_passing?: number;
+             }
+ 
+             interface DeregisterOptions extends CommonOptions {
+@@ -252,10 +269,32 @@ declare namespace Consul {
+                 ttl?: string | undefined;
+                 notes?: string | undefined;
+                 status?: string | undefined;
++                tls_skip_verify?: boolean | undefined;
++                shell?: string;
++                tcp?: string;
++                deregister_critical_service_after?: string;
++                alias_node?: string;
++                alias_service?: string;
++                docker_container_id?: string;
++                grpc?: string;
++                args?: string[];
++                grpc_use_tls?: boolean;
++                method?: string;
++                body?: string;
++                header?: Map<string, string>;
++                timeout: string;
++                output_max_size?: number;
++                success_before_passing?: number;
++                failures_before_passing?: number;
+             }
+ 
+             interface ListOptions extends CommonOptions { }
+ 
++            interface RegisterConnect {
++                native?: boolean;
++                sidecarService?: Service;
++            }
++
+             interface RegisterOptions extends CommonOptions {
+                 name: string;
+                 id?: string | undefined;
+@@ -265,6 +304,9 @@ declare namespace Consul {
+                 meta?: Record<string, string> | undefined;
+                 check?: RegisterCheck | undefined;
+                 checks?: RegisterCheck[] | undefined;
++                enableTagOverride?: boolean;
++                connect?: RegisterConnect;
++                weight?: { passing: number; warning: number };
+             }
+ 
+             interface DeregisterOptions extends CommonOptions {
+@@ -328,7 +370,7 @@ declare namespace Consul {
+         interface ServicesOptions extends Service.ListOptions { }
+ 
+         interface MembersOptions extends CommonOptions {
+-            wan?: boolean | undefined;
++            wan?: boolean;
+         }
+ 
+         interface SelfOptions extends CommonOptions { }
+@@ -957,6 +999,7 @@ declare namespace Consul {
+ 
+         interface WatchOptions {
+             key?: string | undefined;
++            service?: string | undefined;
+         }
+ 
+         interface Options {

@@ -14,7 +14,7 @@ export class HealthCheck {
    */
   refetchInstancesInterval = 25000;
 
-  path: Map<String, String> = new Map();
+  path: Map<string, string> = new Map();
 
   /**
    * Indicates whether the instances should be refetched by the
