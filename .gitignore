@@ -11,7 +11,7 @@
 .nx/
 .yarn/
 *.o
-package-lock.json
+yarn.lock
 
 # IDEs and editors
 /.idea
