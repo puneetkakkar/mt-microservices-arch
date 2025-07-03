@@ -164,8 +164,7 @@ export class ConsulRegistrationBuilder implements RegistrationBuilder {
       case 'tcp':
         check.tcp = opts?.tcp;
         if (!this._heartbeatOptions) {
-          this._heartbeatOptions.enabled = true;
-          this._heartbeatOptions.ttlInSeconds = 30;
+          this._heartbeatOptions = { enabled: true, ttlInSeconds: 30 };
         }
         break;
       case 'http':
@@ -175,9 +174,13 @@ export class ConsulRegistrationBuilder implements RegistrationBuilder {
         check.header = opts?.header;
         check.method = opts?.method;
         check.tls_skip_verify = opts?.skipVerifyTLS || true;
+        // Don't create TTL check for HTTP health checks
         break;
       default:
-        check.ttl = '30s';
+        // Only create TTL check if heartbeat is enabled
+        if (this._heartbeatOptions?.enabled) {
+          check.ttl = '30s';
+        }
         break;
     }
 

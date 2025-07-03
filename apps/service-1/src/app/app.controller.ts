@@ -19,4 +19,9 @@ export class AppController {
     const svcData = await this.serviceInstance.get('api/');
     return svcData.body;
   }
+
+  @Get('/health')
+  getHealth() {
+    return { status: 'ok', timestamp: new Date().toISOString() };
+  }
 }
