@@ -1,24 +1,26 @@
 {
   "implicitDependencies": {
-    "package.json": { "dependencies": "*", "devDependencies": "*" },
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
     ".eslintrc.json": "*"
   },
-  "affected": { "defaultBase": "master" },
+  "affected": {
+    "defaultBase": "main"
+  },
   "npmScope": "swft-mt",
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
-      "options": { "cacheableOperations": ["build", "lint", "test", "e2e"] }
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "parallel": 1
+      }
     }
   },
-  "projects": {
-    "service-1": { "tags": [] },
-    "service-2": { "tags": [] },
-    "bootstrap": { "tags": [] },
-    "common": { "tags": [] },
-    "consul": { "tags": [] },
-    "cloud": { "tags": [] },
-    "loadbalancer": { "tags": [] },
-    "client": { "tags": [] }
-  }
+  "cli": {
+    "defaultCollection": "@nrwl/nest"
+  },
+  "defaultProject": "service-1"
 }
