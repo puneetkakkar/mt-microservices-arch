@@ -5,7 +5,7 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { ServiceStore, SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
+import { SERVICE_REGISTRY_CONFIG, ServiceStore } from '@swft-mt/common';
 import * as consul from 'consul';
 import * as Consul from 'consul';
 import { Watch } from 'consul';
@@ -74,8 +74,8 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
   }
 
   private getToken(): { token?: string } {
-    return this.client.options.config.aclToken
-      ? { token: this.client.options.config.aclToken }
+    return this.client.options.config?.aclToken
+      ? { token: this.client.options.config?.aclToken }
       : {};
   }
 
@@ -98,6 +98,10 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
       `registering service with id: ${this.registration.getInstanceId()}`
     );
 
+    if (!this.client.consul) {
+      throw new Error('ConsulClient is not initialized');
+    }
+
     const service = this.generateService();
     await this.client.consul.agent.service.register(service);
 
@@ -114,15 +118,39 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
 
   async register(): Promise<any> {
     return new Promise<consul.Consul>((resolve, reject) => {
-      const operation = retry.operation();
-      operation.attempt(async () => {
+      const operation = retry.operation({
+        retries: 5,
+        factor: 1,
+        minTimeout: 1000,
+        maxTimeout: 1000,
+      });
+
+      operation.attempt(async (currentAttempt) => {
         try {
+          // Check if consul client is ready
+          if (!this.client.consul) {
+            Logger.log(
+              `ConsulClient not ready, attempt ${currentAttempt}/5. Waiting...`
+            );
+            if (operation.retry(new Error('ConsulClient not ready'))) {
+              return;
+            }
+            reject(
+              new Error('ConsulClient failed to initialize after 5 attempts')
+            );
+            return;
+          }
+
           await this._internalRegister();
           resolve(null);
         } catch (e) {
+          Logger.error(
+            `Consul registration error (attempt ${currentAttempt}):`,
+            e
+          );
           if (this.options.discovery.failFast) {
             Logger.warn(
-              `Fail fast is false. Error registering service with consul: ${this.registration.getService()} ${e}`
+              `Fail fast is true. Error registering service with consul: ${this.registration.getService()} ${e}`
             );
             reject(e);
           }
@@ -147,6 +175,11 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
         this.registration.getServiceId(),
         this.registration.getInstanceId()
       );
+
+      if (!this.client.consul) {
+        Logger.warn('ConsulClient is not initialized, skipping deregistration');
+        return;
+      }
 
       const options = {
         id: this.registration.getInstanceId(),
@@ -227,7 +260,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
       await this.init();
       await this.register();
     } catch (e) {
-      Logger.error(e);
+      Logger.error('Failed to initialize ConsulServiceRegistry:', e);
     }
   }
 

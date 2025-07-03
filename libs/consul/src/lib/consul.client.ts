@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { handleRetry, IReactiveClient } from '@swft-mt/common';
+import { IReactiveClient } from '@swft-mt/common';
 import * as ConsulStatic from 'consul';
 import {
   Acl,
@@ -13,7 +13,6 @@ import {
   Status,
   Watch,
 } from 'consul';
-import { defer } from 'rxjs';
 import { ConsulConfig } from './consul.config';
 
 @Injectable()
@@ -67,22 +66,23 @@ export class ConsulClient
 
   async connect(): Promise<void> {
     try {
-      await defer(async () => {
-        Logger.log('Consul Client started');
-        this.consul = await ConsulStatic({ ...this.options, promisify: true });
-        Logger.log('Consul Client connected successfully');
-        this._initFields(this.consul);
-      })
-        .pipe(
-          handleRetry(
-            this.options.config.retryAttempts,
-            this.options.config.retryDelays,
-            ConsulClient.name
-          )
-        )
-        .toPromise();
+      Logger.log('Consul Client starting...');
+
+      // Create the consul instance
+      this.consul = ConsulStatic({
+        ...this.options.config,
+        promisify: true,
+      });
+
+      Logger.log('Consul Client instance created');
+
+      // Initialize the field references
+      this._initFields(this.consul);
+
+      Logger.log('Consul Client connected successfully');
     } catch (error) {
-      Logger.error('Consul Client not connected');
+      Logger.error('Consul Client connection failed:', error);
+      throw error;
     }
   }
 
