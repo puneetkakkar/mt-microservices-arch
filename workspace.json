@@ -16,7 +16,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/bootstrap"],
           "options": {
-            "jestConfig": "libs/bootstrap/jest.config.js",
+            "jestConfig": "libs/bootstrap/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -38,7 +38,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/client"],
           "options": {
-            "jestConfig": "libs/client/jest.config.js",
+            "jestConfig": "libs/client/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -60,7 +60,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/cloud"],
           "options": {
-            "jestConfig": "libs/cloud/jest.config.js",
+            "jestConfig": "libs/cloud/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -82,7 +82,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/common"],
           "options": {
-            "jestConfig": "libs/common/jest.config.js",
+            "jestConfig": "libs/common/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -104,7 +104,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/consul"],
           "options": {
-            "jestConfig": "libs/consul/jest.config.js",
+            "jestConfig": "libs/consul/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -126,7 +126,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/libs/loadbalancer"],
           "options": {
-            "jestConfig": "libs/loadbalancer/jest.config.js",
+            "jestConfig": "libs/loadbalancer/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -139,13 +139,15 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:webpack",
+          "executor": "@nrwl/webpack:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/service-1",
             "main": "apps/service-1/src/main.ts",
             "tsConfig": "apps/service-1/tsconfig.app.json",
-            "assets": ["apps/service-1/src/assets"]
+            "assets": ["apps/service-1/src/assets"],
+            "target": "node",
+            "compiler": "tsc"
           },
           "configurations": {
             "production": {
@@ -177,7 +179,7 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/service-1"],
           "options": {
-            "jestConfig": "apps/service-1/jest.config.js",
+            "jestConfig": "apps/service-1/jest.config.ts",
             "passWithNoTests": true
           }
         }
@@ -190,13 +192,15 @@
       "projectType": "application",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:webpack",
+          "executor": "@nrwl/webpack:webpack",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/service-2",
             "main": "apps/service-2/src/main.ts",
             "tsConfig": "apps/service-2/tsconfig.app.json",
-            "assets": ["apps/service-2/src/assets"]
+            "assets": ["apps/service-2/src/assets"],
+            "target": "node",
+            "compiler": "tsc"
           },
           "configurations": {
             "production": {
@@ -228,12 +232,13 @@
           "executor": "@nrwl/jest:jest",
           "outputs": ["coverage/apps/service-2"],
           "options": {
-            "jestConfig": "apps/service-2/jest.config.js",
+            "jestConfig": "apps/service-2/jest.config.ts",
             "passWithNoTests": true
           }
         }
       },
       "tags": []
     }
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

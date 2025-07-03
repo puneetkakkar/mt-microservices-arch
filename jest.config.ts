@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   projects: [
     '<rootDir>/apps/service-1',
     '<rootDir>/apps/service-2',
