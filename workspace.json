@@ -14,7 +14,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/bootstrap"],
+          "outputs": ["{workspaceRoot}/coverage/libs/bootstrap"],
           "options": {
             "jestConfig": "libs/bootstrap/jest.config.ts",
             "passWithNoTests": true
@@ -36,7 +36,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/client"],
+          "outputs": ["{workspaceRoot}/coverage/libs/client"],
           "options": {
             "jestConfig": "libs/client/jest.config.ts",
             "passWithNoTests": true
@@ -58,7 +58,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/cloud"],
+          "outputs": ["{workspaceRoot}/coverage/libs/cloud"],
           "options": {
             "jestConfig": "libs/cloud/jest.config.ts",
             "passWithNoTests": true
@@ -80,7 +80,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/common"],
+          "outputs": ["{workspaceRoot}/coverage/libs/common"],
           "options": {
             "jestConfig": "libs/common/jest.config.ts",
             "passWithNoTests": true
@@ -102,7 +102,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/consul"],
+          "outputs": ["{workspaceRoot}/coverage/libs/consul"],
           "options": {
             "jestConfig": "libs/consul/jest.config.ts",
             "passWithNoTests": true
@@ -124,7 +124,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/loadbalancer"],
+          "outputs": ["{workspaceRoot}/coverage/libs/loadbalancer"],
           "options": {
             "jestConfig": "libs/loadbalancer/jest.config.ts",
             "passWithNoTests": true
@@ -177,7 +177,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/service-1"],
+          "outputs": ["{workspaceRoot}/coverage/apps/service-1"],
           "options": {
             "jestConfig": "apps/service-1/jest.config.ts",
             "passWithNoTests": true
@@ -230,7 +230,7 @@
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/service-2"],
+          "outputs": ["{workspaceRoot}/coverage/apps/service-2"],
           "options": {
             "jestConfig": "apps/service-2/jest.config.ts",
             "passWithNoTests": true
