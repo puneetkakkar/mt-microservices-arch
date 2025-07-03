@@ -146,7 +146,7 @@ export class ConsulRegistrationBuilder implements RegistrationBuilder {
 
   private createCheck(opts: ConsulDiscoveryOptions): Check {
     const check: Partial<Check> = {
-      service_id: opts.serviceId || this._instanceId,
+      serviceid: opts.serviceId || this._instanceId,
       name: opts.serviceName || `${this._serviceName} Status`,
       interval: `${opts.interval || 10}s`,
     };
@@ -170,7 +170,7 @@ export class ConsulRegistrationBuilder implements RegistrationBuilder {
         break;
       case 'http':
         check.http = opts?.http;
-        check.timeout = (opts?.timeout || 10) + 's';
+        check.timeout = `${opts?.timeout || 10}s`;
         check.body = opts?.body;
         check.header = opts?.header;
         check.method = opts?.method;
