@@ -11,6 +11,7 @@ A production-ready, enterprise-grade microservice architecture foundation built 
 ## 🚀 Features
 
 ### Core Architecture
+
 - **🏗️ Monorepo Structure**: Built with Nx for efficient development and build processes
 - **🔍 Service Discovery**: Automatic service registration and discovery using Consul
 - **⚖️ Load Balancing**: Intelligent load balancing with configurable strategies
@@ -19,6 +20,7 @@ A production-ready, enterprise-grade microservice architecture foundation built 
 - **🛡️ Graceful Shutdown**: Proper application lifecycle management
 
 ### Service Infrastructure
+
 - **📡 Service Registry**: Centralized service registration and management
 - **🔧 Configuration Management**: Flexible configuration loading from multiple sources
 - **📊 Service Monitoring**: Real-time service health and status tracking
@@ -26,6 +28,7 @@ A production-ready, enterprise-grade microservice architecture foundation built 
 - **🎯 Metadata Management**: Comprehensive service metadata and tagging system
 
 ### Development Experience
+
 - **🔧 TypeScript First**: Full TypeScript support with strict typing
 - **📦 Modular Design**: Clean separation of concerns with reusable libraries
 - **🧪 Testing Ready**: Built-in testing infrastructure with Jest
@@ -60,17 +63,17 @@ This project follows a modular microservice architecture with the following key 
 
 ## 🛠️ Technology Stack
 
-| Component | Technology | Version |
-|-----------|------------|---------|
-| **Runtime** | Node.js | 14+ |
-| **Framework** | NestJS | 7.0+ |
-| **Language** | TypeScript | 4.1+ |
-| **Build System** | Nx | 12.1.1 |
-| **Service Registry** | Consul | 0.40.0 |
-| **HTTP Client** | Got | 11.8.2 |
-| **Testing** | Jest | 26.2.2 |
-| **Linting** | ESLint | 7.22.0 |
-| **Formatting** | Prettier | 2.2.1 |
+| Component            | Technology | Version |
+| -------------------- | ---------- | ------- |
+| **Runtime**          | Node.js    | 14+     |
+| **Framework**        | NestJS     | 7.0+    |
+| **Language**         | TypeScript | 4.1+    |
+| **Build System**     | Nx         | 12.1.1  |
+| **Service Registry** | Consul     | 0.40.0  |
+| **HTTP Client**      | Got        | 11.8.2  |
+| **Testing**          | Jest       | 26.2.2  |
+| **Linting**          | ESLint     | 7.22.0  |
+| **Formatting**       | Prettier   | 2.2.1   |
 
 ## 📦 Installation
 
@@ -83,12 +86,14 @@ This project follows a modular microservice architecture with the following key 
 ### Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-username/mt-microservices-arch.git
    cd mt-microservices-arch
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -96,19 +101,21 @@ This project follows a modular microservice architecture with the following key 
    ```
 
 3. **Start Consul (required for service discovery)**
+
    ```bash
    # Using Docker
    docker run -d --name consul -p 8500:8500 consul:latest
-   
+
    # Or install locally
    # Follow instructions at https://www.consul.io/docs/install
    ```
 
 4. **Start the development servers**
+
    ```bash
    # Start all services
    npm run start
-   
+
    # Start specific service
    npm run start service-1
    npm run start service-2
@@ -119,11 +126,13 @@ This project follows a modular microservice architecture with the following key 
 ### Creating a New Service
 
 1. **Generate a new service using Nx**
+
    ```bash
-   npx nx generate @nrwl/nest:application my-service
+   npx nx generate @nx/nest:application my-service
    ```
 
 2. **Configure the service module**
+
    ```typescript
    import { Module } from '@nestjs/common';
    import { CloudModule } from '@swft-mt/cloud';
@@ -203,16 +212,17 @@ services:
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Service port | 3333 |
-| `NODE_ENV` | Environment | development |
-| `CONSUL_HOST` | Consul host | localhost |
-| `CONSUL_PORT` | Consul port | 8500 |
+| Variable      | Description  | Default     |
+| ------------- | ------------ | ----------- |
+| `PORT`        | Service port | 3333        |
+| `NODE_ENV`    | Environment  | development |
+| `CONSUL_HOST` | Consul host  | localhost   |
+| `CONSUL_PORT` | Consul port  | 8500        |
 
 ### Service Configuration
 
 Each service can be configured through:
+
 - Environment variables
 - Bootstrap configuration files (`bootstrap.yml`, `bootstrap.json`)
 - Runtime configuration injection
@@ -265,6 +275,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### Code Style
 
 This project uses:
+
 - ESLint for code linting
 - Prettier for code formatting
 - TypeScript strict mode
