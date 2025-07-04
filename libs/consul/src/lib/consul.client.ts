@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { IReactiveClient } from '@swft-mt/common';
-import * as ConsulStatic from 'consul';
+import Consul from 'consul';
 import {
   Acl,
   Agent,
@@ -17,11 +17,8 @@ import { ConsulConfig } from './consul.config';
 
 @Injectable()
 export class ConsulClient
-  implements
-    IReactiveClient<ConsulStatic.Consul>,
-    ConsulStatic.Consul,
-    OnModuleInit {
-  public consul: ConsulStatic.Consul;
+  implements IReactiveClient<Consul.Consul>, Consul.Consul, OnModuleInit {
+  public consul: Consul.Consul;
 
   acl: Acl;
   agent: Agent;
@@ -36,13 +33,13 @@ export class ConsulClient
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  async lock(opts: ConsulStatic.Lock.Options): Promise<Lock> {
+  async lock(opts: Consul.Lock.Options): Promise<Lock> {
     return (await this.consul).lock(opts);
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  async watch(opts: ConsulStatic.Watch.Options): Promise<Watch> {
+  async watch(opts: Consul.Watch.Options): Promise<Watch> {
     return (await this.consul).watch(opts);
   }
 
@@ -53,7 +50,7 @@ export class ConsulClient
     // close connection;
   }
 
-  private _initFields(client: ConsulStatic.Consul) {
+  private _initFields(client: Consul.Consul) {
     this.acl = client.acl;
     this.agent = client.agent;
     this.catalog = client.catalog;
@@ -69,7 +66,7 @@ export class ConsulClient
       Logger.log('Consul Client starting...');
 
       // Create the consul instance
-      this.consul = ConsulStatic({
+      this.consul = Consul({
         ...this.options.config,
         promisify: true,
       });

@@ -1,12 +1,16 @@
-import { Hooks } from 'got';
 import * as nodeStream from 'stream';
 
 export interface HttpGotOptions {
-  header?: { [key: string]: string };
+  headers?: { [key: string]: string };
   body?: string | Buffer | nodeStream.Readable;
-  hooks?: Hooks;
-  timeout?: number | object;
-  retry?: number | object;
+  hooks?: any; // Will be resolved dynamically
+  timeout?: { request?: number; response?: number; deadline?: number };
+  retry?: {
+    limit?: number;
+    methods?: string[]; // Will be resolved dynamically
+    statusCodes?: number[];
+    errorCodes?: string[];
+  };
   decompress?: boolean;
   throwHttpErrors?: boolean;
   http2?: boolean;
