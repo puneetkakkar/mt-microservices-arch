@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ServiceInstance } from '@swft-mt/common';
 import { LoadBalancerClient, LoadBalancerRequest } from '@swft-mt/loadbalancer';
+import got, * as Got from 'got';
 import { merge } from 'lodash';
 import { HttpGotOptions, IHttpServiceClient } from '../interfaces';
 
@@ -13,18 +14,16 @@ export class HttpClient {
   } = {
     responseType: 'json',
   };
-  private instance: any;
+  private instance: Got.Got;
 
   constructor(
     private readonly lb: LoadBalancerClient,
     options: IHttpServiceClient,
   ) {
-    this.init(options).catch((e) =>
-      Logger.error('Failed to initialize HttpClient:', e),
-    );
+    this.init(options);
   }
 
-  async init(options: IHttpServiceClient) {
+  init(options: IHttpServiceClient) {
     try {
       this.serviceId = options.service;
       const { prefixUrl } = this.getServiceAddress();
@@ -32,18 +31,9 @@ export class HttpClient {
         responseType: 'json',
         prefixUrl,
       });
-      // Convert timeout to proper format if it's a number
-      if (this.httpOpts.timeout && typeof this.httpOpts.timeout === 'number') {
-        this.httpOpts.timeout = { request: this.httpOpts.timeout };
-      }
-      // Convert retry to proper format if it's a number
-      if (this.httpOpts.retry && typeof this.httpOpts.retry === 'number') {
-        this.httpOpts.retry = { limit: this.httpOpts.retry };
-      }
-      const { default: got } = await import('got');
       this.instance = got.extend({
         ...this.httpOpts,
-      } as any);
+      });
     } catch (e) {
       Logger.error(e);
       throw e;
@@ -86,11 +76,9 @@ export class HttpClient {
     return this.lb.execute(
       this.serviceId,
       this.node,
-      new LoadBalancerRequest<Promise<any> & { cancel(): void }>(
-        this.instance,
-        path,
-        { ...options, method },
-      ),
+      new LoadBalancerRequest<
+        Promise<Got.Response<string>> & { cancel(): void }
+      >(this.instance, path, { ...options, method }),
     );
   }
 
