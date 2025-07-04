@@ -44,14 +44,14 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@nestjs/schematics": "10.2.3",
+    "@nestjs/schematics": "11.0.5",
     "@nestjs/testing": "10.4.9",
-    "@nx/eslint-plugin": "20.8.2",
-    "@nx/jest": "20.8.2",
-    "@nx/nest": "20.8.2",
-    "@nx/node": "20.8.2",
-    "@nx/webpack": "20.8.2",
-    "@nx/workspace": "20.8.2",
+    "@nx/eslint-plugin": "21.2.2",
+    "@nx/jest": "21.2.2",
+    "@nx/nest": "21.2.2",
+    "@nx/node": "21.2.2",
+    "@nx/webpack": "21.2.2",
+    "@nx/workspace": "21.2.2",
     "@types/consul": "^0.23.34",
     "@types/ip": "^1.1.0",
     "@types/jest": "29.5.14",
@@ -65,13 +65,13 @@
     "eslint-config-prettier": "10.1.5",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
-    "nx": "20.8.2",
+    "nx": "21.2.2",
     "patch-package": "^6.4.7",
     "prettier": "2.8.8",
     "ts-jest": "29.1.5",
     "ts-node": "10.9.1",
-    "typescript": "5.7.3",
-    "@nx/eslint": "20.8.2"
+    "typescript": "5.8.3",
+    "@nx/eslint": "21.2.2"
   },
   "packageManager": "yarn@1.22.22"
 }
