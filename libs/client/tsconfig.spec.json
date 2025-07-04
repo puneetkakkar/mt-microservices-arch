@@ -2,10 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "NodeNext",
+    "module": "commonjs",
     "types": ["jest", "node"]
   },
   "include": [
+    "src/**/*.ts",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",

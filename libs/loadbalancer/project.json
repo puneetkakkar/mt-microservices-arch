@@ -1,9 +1,25 @@
 {
-  "name": "loadbalancer",
+  "name": "@swft-mt/loadbalancer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/loadbalancer/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/loadbalancer",
+        "main": "libs/loadbalancer/src/index.ts",
+        "tsConfig": "libs/loadbalancer/tsconfig.lib.json",
+        "assets": ["libs/loadbalancer/*.md"]
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ]
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
     },

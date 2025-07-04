@@ -1,18 +1,16 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "rootDir": ".",
     "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "nodenext",
+    "declaration": true,
+    "declarationMap": true,
+    "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "es2015",
-    "module": "nodenext",
+    "module": "commonjs",
     "lib": ["es2017", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "@swft-mt/bootstrap": ["libs/bootstrap/src/index.ts"],
@@ -23,5 +21,5 @@
       "@swft-mt/loadbalancer": ["libs/loadbalancer/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "dist", "tmp"]
 }

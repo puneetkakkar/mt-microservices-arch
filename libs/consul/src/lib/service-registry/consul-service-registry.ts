@@ -222,7 +222,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     this.watchers[serviceName] = this.client.consul.watch({
       method: this.client.consul.health.service,
       options: {
-        timeout: this.WATCH_TIMEOUT,
+        timeout: this.WATCH_TIMEOUT.toString(),
         service: serviceName,
         wait: '5m',
         ...this.getToken(),
@@ -244,7 +244,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     this.watcher = this.client.consul.watch({
       method: this.client.consul.catalog.service.list,
       options: {
-        timeout: this.WATCH_TIMEOUT,
+        timeout: this.WATCH_TIMEOUT.toString(),
         wait: '5m',
       },
     });

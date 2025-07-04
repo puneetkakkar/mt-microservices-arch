@@ -1,4 +1,4 @@
-import { Service } from '@swft-mt/cloud';
+import { Service } from '@swft-mt/common';
 import { ConsulDiscoveryOptions } from './consul-discovery.options';
 import { HeartbeatOptions } from './heartbeat.interface';
 
