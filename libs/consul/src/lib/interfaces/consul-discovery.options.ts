@@ -1,4 +1,4 @@
-import { DiscoveryOptions } from '@swft-mt/cloud';
+import { DiscoveryOptions } from '@swft-mt/common';
 
 type ConsulDiscoveryOption = {
   scheme?: string;

@@ -1,1 +1,3 @@
 node_modules
+apps/service-1/webpack.config.js
+apps/service-2/webpack.config.js

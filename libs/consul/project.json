@@ -1,9 +1,25 @@
 {
-  "name": "consul",
+  "name": "@swft-mt/consul",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/consul/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/consul",
+        "main": "libs/consul/src/index.ts",
+        "tsConfig": "libs/consul/tsconfig.lib.json",
+        "assets": ["libs/consul/*.md"]
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ]
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
     },

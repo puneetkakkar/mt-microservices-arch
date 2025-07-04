@@ -1,5 +1,5 @@
 diff --git a/node_modules/@types/consul/index.d.ts b/node_modules/@types/consul/index.d.ts
-index e8afcf2..aa1fc26 100755
+index e8afcf2..3fdd086 100755
 --- a/node_modules/@types/consul/index.d.ts
 +++ b/node_modules/@types/consul/index.d.ts
 @@ -8,7 +8,7 @@
@@ -11,6 +11,15 @@ index e8afcf2..aa1fc26 100755
  
  declare namespace Consul {
  
+@@ -27,7 +27,7 @@ declare namespace Consul {
+         wan?: boolean | undefined;
+ 
+         ctx?: NodeJS.EventEmitter | undefined;
+-        timeout?: number | undefined;
++        timeout?: string | undefined;
+     }
+ 
+     interface Response extends HttpIncomingMessage {
 @@ -156,6 +156,23 @@ declare namespace Consul {
                  ttl?: string | undefined;
                  notes?: string | undefined;
@@ -25,10 +34,10 @@ index e8afcf2..aa1fc26 100755
 +                grpc?: string;
 +                args?: string[];
 +                grpc_use_tls?: boolean;
++                timeout: string;
 +                method?: string;
 +                body?: string;
 +                header?: Map<string, string>;
-+                timeout: string;
 +                output_max_size?: number;
 +                success_before_passing?: number;
 +                failures_before_passing?: number;
@@ -88,7 +97,7 @@ index e8afcf2..aa1fc26 100755
  
          interface SelfOptions extends CommonOptions { }
 @@ -957,6 +999,7 @@ declare namespace Consul {
- 
+         
          interface WatchOptions {
              key?: string | undefined;
 +            service?: string | undefined;

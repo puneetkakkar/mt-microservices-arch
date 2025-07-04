@@ -1,7 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { getMetadataStorage, ServiceInstance } from '@swft-mt/common';
-import { ClassWithArgs } from '../../../common/src/lib/meta-store/class-type.interface';
-import { BaseStrategy } from './base.strategy';
+import { ClassWithArgs, getMetadataStorage } from '@swft-mt/common';
 import { StrategyRegistry } from './strategy.registry';
 
 @Injectable()
@@ -19,7 +17,7 @@ export class StrategyDiscovery implements OnModuleInit {
           // const strategy = (new StrategyClass() as unknown) as BaseStrategy<ServiceInstance>;
           this.strategyRegistry.addStrategy<ClassWithArgs<typeof ref.target>>(
             ref.name || ref.target.name,
-            StrategyClass
+            StrategyClass,
           );
         }
       }

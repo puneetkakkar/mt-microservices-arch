@@ -1,9 +1,25 @@
 {
-  "name": "bootstrap",
+  "name": "@swft-mt/bootstrap",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/bootstrap/src",
   "projectType": "library",
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/bootstrap",
+        "main": "libs/bootstrap/src/index.ts",
+        "tsConfig": "libs/bootstrap/tsconfig.lib.json",
+        "assets": ["libs/bootstrap/*.md"]
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "dependencies"
+        }
+      ]
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
     },

@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { IReactiveClient } from '@swft-mt/common';
-import Consul from 'consul';
+import * as Consul from 'consul';
 import {
   Acl,
   Agent,
