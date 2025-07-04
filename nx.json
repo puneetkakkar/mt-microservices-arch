@@ -2,16 +2,6 @@
   "affected": {
     "defaultBase": "main"
   },
-  "npmScope": "swft-mt",
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
-        "parallel": 1
-      }
-    }
-  },
   "defaultProject": "service-1",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
@@ -28,13 +18,26 @@
   },
   "targetDefaults": {
     "build": {
-      "inputs": ["production", "^production"]
+      "inputs": ["production", "^production"],
+      "cache": true
     },
-    "lint": {
-      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"]
+    "@nx/jest:jest": {
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "cache": true,
+      "options": {
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
     },
-    "test": {
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"]
+    "@nx/eslint:lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.js"],
+      "cache": true
     }
-  }
+  },
+  "parallel": 1
 }

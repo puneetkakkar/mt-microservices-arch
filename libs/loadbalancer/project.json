@@ -5,17 +5,13 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/loadbalancer/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/loadbalancer"],
       "options": {
-        "jestConfig": "libs/loadbalancer/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/loadbalancer/jest.config.ts"
       }
     }
   },

@@ -5,17 +5,13 @@
   "projectType": "library",
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["libs/client/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/libs/client"],
       "options": {
-        "jestConfig": "libs/client/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "libs/client/jest.config.ts"
       }
     }
   },

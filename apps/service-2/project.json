@@ -13,7 +13,8 @@
         "tsConfig": "apps/service-2/tsconfig.app.json",
         "assets": ["apps/service-2/src/assets"],
         "target": "node",
-        "compiler": "tsc"
+        "compiler": "tsc",
+        "webpackConfig": "apps/service-2/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -36,17 +37,13 @@
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["apps/service-2/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/apps/service-2"],
       "options": {
-        "jestConfig": "apps/service-2/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/service-2/jest.config.ts"
       }
     }
   },
