@@ -51,7 +51,11 @@ for i in $(seq 1 $REQUEST_COUNT); do
     fi
     
     # Small delay between requests
-    sleep 0.5
+    if command -v usleep > /dev/null; then
+        usleep 500000
+    else
+        perl -e 'select(undef, undef, undef, 0.5)'
+    fi
 done
 
 echo ""

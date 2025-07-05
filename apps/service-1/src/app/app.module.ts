@@ -26,7 +26,7 @@ import { AppService } from './app.service';
         },
         discovery: {
           type: 'http',
-          http: `http://192.168.1.201:${process.env.PORT || 3333}/api/health`,
+          http: `http://${process.env.SERVICE_IP || 'host.docker.internal'}:${process.env.PORT || 3333}/api/health`,
           interval: 10,
           timeout: '5',
           failFast: false,
