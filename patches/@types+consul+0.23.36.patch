@@ -1,5 +1,5 @@
 diff --git a/node_modules/@types/consul/index.d.ts b/node_modules/@types/consul/index.d.ts
-index e8afcf2..3fdd086 100755
+index e8afcf2..23e09a2 100755
 --- a/node_modules/@types/consul/index.d.ts
 +++ b/node_modules/@types/consul/index.d.ts
 @@ -8,7 +8,7 @@
@@ -16,7 +16,7 @@ index e8afcf2..3fdd086 100755
  
          ctx?: NodeJS.EventEmitter | undefined;
 -        timeout?: number | undefined;
-+        timeout?: string | undefined;
++        timeout?: string | number | undefined;
      }
  
      interface Response extends HttpIncomingMessage {

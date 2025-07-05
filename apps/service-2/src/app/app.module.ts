@@ -8,6 +8,12 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
+    ConsulModule.forRoot({
+      host: 'localhost',
+      port: '8500',
+      promisify: true,
+      secure: false,
+    }),
     CloudModule.forRoot({
       registry: {
         discoverer: 'consul',
@@ -16,13 +22,19 @@ import { AppService } from './app.service';
           address: 'localhost',
           port: parseInt(process.env.PORT) || 3334,
         },
+        discovery: {
+          type: 'http',
+          http: 'http://host.docker.internal:3334/api/health',
+          interval: 10,
+          timeout: '5',
+          failFast: false,
+          scheme: 'http',
+        },
+        heartbeat: {
+          enabled: false,
+          ttlInSeconds: 30,
+        },
       },
-    }),
-    ConsulModule.forRoot({
-      host: 'localhost',
-      port: '8500',
-      promisify: true,
-      secure: false,
     }),
     ClientModule.forRoot(),
     LoadBalancerModule.forRoot(),

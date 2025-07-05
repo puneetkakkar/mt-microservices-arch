@@ -36,7 +36,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     @Inject(SERVICE_REGISTRY_CONFIG)
     private readonly options: ConsulRegistryOptions,
     private readonly client: ConsulClient,
-    private readonly serviceStore: ServiceStore
+    private readonly serviceStore: ServiceStore,
   ) {}
 
   async init() {
@@ -64,7 +64,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     if (this.options.heartbeat.enabled) {
       const task = new ConsulHeartbeatTask(
         this.client,
-        this.registration.getInstanceId()
+        this.registration.getInstanceId(),
       );
       this.ttlScheduler = new TtlScheduler(this.options.heartbeat, task);
     }
@@ -95,7 +95,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
 
   private async _internalRegister(): Promise<void> {
     Logger.log(
-      `registering service with id: ${this.registration.getInstanceId()}`
+      `registering service with id: ${this.registration.getInstanceId()}`,
     );
 
     if (!this.client.consul) {
@@ -130,13 +130,13 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
           // Check if consul client is ready
           if (!this.client.consul) {
             Logger.log(
-              `ConsulClient not ready, attempt ${currentAttempt}/5. Waiting...`
+              `ConsulClient not ready, attempt ${currentAttempt}/5. Waiting...`,
             );
             if (operation.retry(new Error('ConsulClient not ready'))) {
               return;
             }
             reject(
-              new Error('ConsulClient failed to initialize after 5 attempts')
+              new Error('ConsulClient failed to initialize after 5 attempts'),
             );
             return;
           }
@@ -146,11 +146,11 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
         } catch (e) {
           Logger.error(
             `Consul registration error (attempt ${currentAttempt}):`,
-            e
+            e,
           );
           if (this.options.discovery.failFast) {
             Logger.warn(
-              `Fail fast is true. Error registering service with consul: ${this.registration.getService()} ${e}`
+              `Fail fast is true. Error registering service with consul: ${this.registration.getService()} ${e}`,
             );
             reject(e);
           }
@@ -165,7 +165,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
 
   async deregister(): Promise<void> {
     Logger.log(
-      `Deregistering service with consul: ${this.registration.getInstanceId()}`
+      `Deregistering service with consul: ${this.registration.getInstanceId()}`,
     );
 
     try {
@@ -173,7 +173,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
 
       this.serviceStore.removeServiceNode(
         this.registration.getServiceId(),
-        this.registration.getInstanceId()
+        this.registration.getInstanceId(),
       );
 
       if (!this.client.consul) {
@@ -187,7 +187,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
       };
       await this.client.consul.agent.service.deregister(options);
       Logger.log(
-        `Deregistered service with consul: ${this.registration.getInstanceId()}`
+        `Deregistered service with consul: ${this.registration.getInstanceId()}`,
       );
     } catch (e) {
       Logger.error(e);
@@ -201,12 +201,12 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     await Promise.all(
       services.map(async (service: string) => {
         const nodes = (await this.client.consul.health.service(
-          service
+          service,
         )) as any[];
         const serviceNodes = consulServiceToServiceInstance(nodes);
         this.serviceStore.setServices(service, serviceNodes);
         this.watch(service);
-      })
+      }),
     );
   }
 
@@ -222,7 +222,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     this.watchers[serviceName] = this.client.consul.watch({
       method: this.client.consul.health.service,
       options: {
-        timeout: this.WATCH_TIMEOUT.toString(),
+        timeout: this.WATCH_TIMEOUT,
         service: serviceName,
         wait: '5m',
         ...this.getToken(),
@@ -244,7 +244,7 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
     this.watcher = this.client.consul.watch({
       method: this.client.consul.catalog.service.list,
       options: {
-        timeout: this.WATCH_TIMEOUT.toString(),
+        timeout: this.WATCH_TIMEOUT,
         wait: '5m',
       },
     });

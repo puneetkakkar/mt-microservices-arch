@@ -16,8 +16,16 @@ export class AppController {
 
   @Get('/service-2')
   async getServiceData() {
-    const svcData = await this.serviceInstance.get('api/');
-    return svcData.body;
+    try {
+      const svcData = await this.serviceInstance.get('api/');
+      return svcData.body;
+    } catch (error) {
+      return {
+        error: 'Service-2 is not available',
+        message: error.message,
+        timestamp: new Date().toISOString(),
+      };
+    }
   }
 
   @Get('/health')
