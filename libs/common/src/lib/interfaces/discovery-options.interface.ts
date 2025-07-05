@@ -8,7 +8,7 @@ export interface SharedHealthCheckOptions {
 
 export interface HTTPDiscoveryOptions extends SharedHealthCheckOptions {
   type: 'http';
-  timeout?: number | undefined;
+  timeout?: string | number | undefined;
   body?: string;
   header?: Map<string, any>;
   http: string;

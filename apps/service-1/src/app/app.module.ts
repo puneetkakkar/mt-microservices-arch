@@ -26,8 +26,9 @@ import { AppService } from './app.service';
         },
         discovery: {
           type: 'http',
-          http: 'http://host.docker.internal:3333/api/health',
+          http: 'http://192.168.1.201:3333/api/health',
           interval: 10,
+          timeout: '5',
           failFast: false,
           scheme: 'http',
         },

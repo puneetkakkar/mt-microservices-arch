@@ -137,7 +137,7 @@ export class ConsulRegistrationBuilder implements RegistrationBuilder {
       address: this._host,
       id: this._instanceId,
       tags,
-      check,
+      check: check as any,
       meta,
     };
 
