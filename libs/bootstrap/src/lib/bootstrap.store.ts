@@ -15,7 +15,10 @@ export class BootstrapStore extends EventEmitter {
     this._data = data;
   }
 
-  get<T>(path: string, defaults?: T): T {
-    return get(this._data, path, defaults);
+  get<T>(path: string | undefined, defaults?: T): T {
+    if (typeof path === 'undefined') {
+      return defaults as T;
+    }
+    return get(this._data, path, defaults) as T;
   }
 }

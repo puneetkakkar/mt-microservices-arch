@@ -1,4 +1,4 @@
-import * as ZooKeeper from 'zookeeper';
+import ZooKeeper from 'zookeeper';
 
 export * from './lib/zookeeper.module';
 export * from './lib/zookeeper.client';

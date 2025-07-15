@@ -1,34 +1,81 @@
 import {
   BeforeApplicationShutdown,
   Injectable,
+  Logger,
   OnModuleInit,
 } from '@nestjs/common';
+import { handleRetry } from '@swft-mt/common';
+import { merge } from 'lodash';
+import { defer, EMPTY, lastValueFrom } from 'rxjs';
+import ZooKeeper from 'zookeeper';
 import { ZookeeperConfig } from './zookeeper.config';
-import * as ZooKeeper from 'zookeeper';
 
 @Injectable()
-export class ZookeeperClient extends ZooKeeper implements BeforeApplicationShutdown, OnModuleInit {
+export class ZookeeperClient
+  extends ZooKeeper
+  implements BeforeApplicationShutdown, OnModuleInit
+{
   private opts = {};
+  private connected = false;
+  private logg = new Logger(ZookeeperClient.name);
 
   constructor(private readonly options: ZookeeperConfig) {
     super({
-      debug_level: Zookeeper.,
+      debug_level: ZooKeeper.constants.ZOO_LOG_LEVEL_WARN,
       host_order_deterministic: false,
     });
+
+    this.opts = {
+      debug_level: ZooKeeper.constants.ZOO_LOG_LEVEL_WARN,
+      host_order_deterministic: false,
+    };
   }
 
-  private createClient(options: any): any {
-    // Implementation for creating a Zookeeper client
-    // This is a placeholder, actual implementation will depend on the Zookeeper library used
-    return {};
+  override close(): any | Promise<void> {
+    super.close();
   }
 
-  public connect(): Promise<void> {
-    // Implementation for connecting to Zookeeper
-    return Promise.resolve();
+  override async connect(): Promise<void> {
+    this.opts = merge({}, this.opts, {
+      connect: this.options.config.host,
+      timeout: this.options.config.timeout,
+      debug_level: this.options.config.logLevel,
+      host_order_deterministic:
+        this.options.config.hostOrderDeterministic ?? false,
+    });
+
+    try {
+      await lastValueFrom(
+        defer(async () => {
+          this.once('connect', () => {
+            this.connected = true;
+            this.logg.log('Zookeeper client connected successfully');
+          });
+
+          super.connect(this.opts, () => {
+            this.connected = true;
+          });
+
+          return EMPTY;
+        }).pipe(
+          handleRetry(
+            this.options.config.retryAttempts,
+            this.options.config.retryDelays,
+            ZookeeperClient.name,
+          ),
+        ),
+      );
+    } catch (error) {
+      this.connected = false;
+      this.logg.error(`Failed to connect to Zookeeper: ${error}`);
+    }
   }
 
-  public close(): void {
-    // Implementation for closing the Zookeeper connection
+  beforeApplicationShutdown() {
+    this.close();
+  }
+
+  async onModuleInit() {
+    await this.connect();
   }
 }

@@ -11,7 +11,7 @@ export class BootConfig {
     this.bootstrapStore.data = this.bootConfigFileLoader.load();
   }
 
-  get<T>(path?: string, defaults?: T): T {
+  get<T>(path?: string | undefined, defaults?: T): T {
     return this.bootstrapStore.get<T>(path, defaults);
   }
 }

@@ -10,7 +10,7 @@ export class ServiceInstanceState {
   activeRequestCountTimeout = 10;
   lastActiveRequestsCountChangeTimestamp = 0;
   firstConnectionTimestamp = 0;
-  lastConnectionFailedTimestamp: number = null;
+  lastConnectionFailedTimestamp: number | null = null;
   lastConnectionFailedMessage = '';
   failureCounts = 0;
 
@@ -88,7 +88,7 @@ export class ServiceInstanceState {
     }
   }
 
-  setResponseTime(time) {
+  setResponseTime(time: number) {
     if (!this.fixedWeight) {
       this.weight = time - this.responseTimeAvg;
     }

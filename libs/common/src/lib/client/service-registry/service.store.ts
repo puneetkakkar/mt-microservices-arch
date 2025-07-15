@@ -41,22 +41,21 @@ export class ServiceStore extends EventEmitter implements OnModuleDestroy {
   removeServiceNode(serviceName: string, nodeId: string): void {
     try {
       if (this.services.has(serviceName)) {
-        if (this.services.get(serviceName).length === 1) {
+        const serviceList = this.services.get(serviceName);
+        if ((serviceList?.length ?? 0) === 1) {
           this.emit(
             this.eventName,
             'removed',
             serviceName,
-            this.services.get(serviceName)
+            serviceList,
           );
           this.services.delete(serviceName);
-        } else {
-          const idx = this.services
-            .get(serviceName)
-            .findIndex((elem) => elem.getInstanceId() === nodeId);
+        } else if (serviceList) {
+          const idx = serviceList.findIndex((elem) => elem.getInstanceId() === nodeId);
 
           if (idx !== -1) {
-            const service = this.services.get(serviceName).splice(idx, 1);
-            this.emit(this.eventName, 'removed', serviceName, [service]);
+            const service = serviceList.splice(idx, 1);
+            this.emit(this.eventName, 'removed', serviceName, service);
           }
         }
       }
@@ -73,8 +72,8 @@ export class ServiceStore extends EventEmitter implements OnModuleDestroy {
     callback: (
       type: 'added' | 'removed',
       name: string,
-      service: ServiceInstance[]
-    ) => void
+      service: ServiceInstance[],
+    ) => void,
   ): void {
     this.on(this.eventName, callback);
   }
