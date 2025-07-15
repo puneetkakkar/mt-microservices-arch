@@ -8,5 +8,6 @@ export default {
     '<rootDir>/libs/cloud',
     '<rootDir>/libs/loadbalancer',
     '<rootDir>/libs/client',
+    '<rootDir>/libs/zookeeper',
   ],
 };

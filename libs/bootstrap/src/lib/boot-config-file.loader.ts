@@ -18,7 +18,7 @@ export class BootConfigFileLoader {
   }
 
   public load(): any {
-    const configs = [];
+    const configs: any[] = [];
     this.checkFileExists();
     this.files.forEach((file, index) => {
       configs.push(this.loadFile(file));
