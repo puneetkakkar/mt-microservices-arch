@@ -1,6 +1,11 @@
-import { ConsulRegistryProviderOptions } from './registry-options.interface';
+import {
+  ConsulRegistryProviderOptions,
+  ZookeeperRegistryProviderOptions,
+} from './registry-options.interface';
 
-export type RegistryConfiguration = ConsulRegistryProviderOptions;
+export type RegistryConfiguration =
+  | ConsulRegistryProviderOptions
+  | ZookeeperRegistryProviderOptions;
 
 export interface CloudModuleOptions {
   registry: RegistryConfiguration;

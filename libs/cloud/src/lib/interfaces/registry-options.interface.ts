@@ -10,3 +10,7 @@ export interface BaseRegistryOption {
 export interface ConsulRegistryProviderOptions extends BaseRegistryOption {
   discoverer: 'consul';
 }
+
+export interface ZookeeperRegistryProviderOptions extends BaseRegistryOption {
+  discoverer: 'zookeeper';
+}

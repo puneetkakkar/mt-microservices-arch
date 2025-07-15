@@ -4,7 +4,7 @@ import { RegistryConfiguration } from '../interfaces';
 import { validateRegistryOptions } from './validate-registry-options.util';
 
 export function getSharedProviderUtils(
-  options: RegistryConfiguration
+  options: RegistryConfiguration,
 ): Array<Provider> {
   const registryOption = validateRegistryOptions(options);
 
@@ -27,6 +27,19 @@ export function getSharedProviderUtils(
     };
 
     sharedProviders.push(ConsulServiceRegistry);
+  } else if (registryOption.discoverer === 'zookeeper') {
+    const { ZookeeperServiceRegistry } = require('@swft-mt/zookeeper');
+
+    configProvider.useValue = {
+      service: registryOption.service,
+      discovery: {
+        failFast: true,
+        ...registryOption.discovery,
+      },
+      heartbeat: registryOption.heartbeat,
+    };
+
+    sharedProviders.push(ZookeeperServiceRegistry);
   }
 
   sharedProviders.push(configProvider);
