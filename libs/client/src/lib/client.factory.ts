@@ -11,7 +11,7 @@ export class ClientFactory {
     force?: boolean,
   ) {
     const key = this.generateKey(config);
-    if (this.cache.has(key) || force) {
+    if (!this.cache.has(key) || force) {
       if (config.transport === 'http') {
         const client = new HttpClient(lb, config);
         this.cache.set(key, client);

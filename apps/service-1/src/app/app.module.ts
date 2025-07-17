@@ -24,7 +24,7 @@ import { AppService } from './app.service';
       registry: {
         discoverer: 'zookeeper',
         service: {
-          id: 'service-1',
+          id: `service-1-${process.env.PORT || 3333}`,
           name: 'service-1',
           address: 'localhost',
           port: parseInt(process.env.PORT) || 3333,
