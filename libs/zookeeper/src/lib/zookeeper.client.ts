@@ -31,7 +31,7 @@ export class ZookeeperClient
     };
   }
 
-  override close(): any | Promise<void> {
+  override close(): void {
     super.close();
   }
 

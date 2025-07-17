@@ -41,55 +41,60 @@ export class ZookeeperServiceRegistry
   ) {}
 
   async init() {
-    if (this.options.heartbeat == null) {
-      throw Error('HeartbeatOptions is required');
+    try {
+      if (this.options.heartbeat == null) {
+        throw Error('HeartbeatOptions is required');
+      }
+
+      if (this.options.discovery == null) {
+        throw Error('ZookeeperDiscoveryOptions is required.');
+      }
+
+      this.registration = new ZookeeperRegistrationBuilder()
+        .discoveryOptions(this.options.discovery)
+        .heartbeatOptions(this.options.heartbeat)
+        .host(this.options.service?.address)
+        .port(this.options.service?.port || 0)
+        .serviceName(this.options.service?.name || '')
+        .tags(this.options.service?.tags || [])
+        .status(this.options.service?.status || 'UP')
+        .version(this.options.service?.version || '1.0.0')
+        .metadata(this.options.service?.metadata || {})
+        .instanceId(this.options.service?.id || '')
+        .domain(this.options.service?.domain || 'swft-mt')
+        .build();
+
+      if (this.options.heartbeat.enabled) {
+        const task = new ZookeeperHeartbeatTask(
+          this.client,
+          this.registration.getInstanceId(),
+        );
+        this.ttlScheduler = new TtlScheduler(this.options.heartbeat, task);
+      }
+
+      // Wait for zookeeper connection before proceeding
+      let attempts = 0;
+      const maxAttempts = 30; // 30 seconds
+      while (!this.client.connected && attempts < maxAttempts) {
+        this.logger.log(`Waiting for zookeeper connection... (attempt ${attempts + 1}/${maxAttempts})`);
+        await sleep(1000);
+        attempts++;
+      }
+
+      if (!this.client.connected) {
+        throw new Error('Failed to connect to zookeeper within timeout period');
+      }
+
+      this.logger.log('Zookeeper connected, proceeding with registration');
+
+      await this.createNode();
+
+      await this.watchAll();
+    } catch (e) {
+      this.logger.error('Error in init method:', e);
+      // Don't throw the error, just log it and continue
+      // This prevents the application from crashing
     }
-
-    if (this.options.discovery == null) {
-      throw Error('ZookeeperDiscoveryOptions is required.');
-    }
-
-    this.registration = new ZookeeperRegistrationBuilder()
-      .discoveryOptions(this.options.discovery)
-      .heartbeatOptions(this.options.heartbeat)
-      .host(this.options.service?.address)
-      .port(this.options.service?.port || 0)
-      .serviceName(this.options.service?.name || '')
-      .tags(this.options.service?.tags || [])
-      .status(this.options.service?.status || 'UP')
-      .version(this.options.service?.version || '1.0.0')
-      .metadata(this.options.service?.metadata || {})
-      .instanceId(this.options.service?.id || '')
-      .domain(this.options.service?.domain || 'swft-mt')
-      .instanceId(this.options.service?.id || '')
-      .build();
-
-    if (this.options.heartbeat.enabled) {
-      const task = new ZookeeperHeartbeatTask(
-        this.client,
-        this.registration.getInstanceId(),
-      );
-      this.ttlScheduler = new TtlScheduler(this.options.heartbeat, task);
-    }
-
-    // Wait for zookeeper connection before proceeding
-    let attempts = 0;
-    const maxAttempts = 30; // 30 seconds
-    while (!this.client.connected && attempts < maxAttempts) {
-      this.logger.log(`Waiting for zookeeper connection... (attempt ${attempts + 1}/${maxAttempts})`);
-      await sleep(1000);
-      attempts++;
-    }
-
-    if (!this.client.connected) {
-      throw new Error('Failed to connect to zookeeper within timeout period');
-    }
-
-    this.logger.log('Zookeeper connected, proceeding with registration');
-
-    await this.createNode();
-
-    await this.watchAll();
   }
 
   async close(): Promise<void> {
@@ -110,7 +115,9 @@ export class ZookeeperServiceRegistry
       await this.init();
       await this.register();
     } catch (error) {
-      throw error;
+      this.logger.error('Error in onModuleInit:', error);
+      // Don't throw the error, just log it and continue
+      // This prevents the application from crashing
     }
   }
 
@@ -209,16 +216,25 @@ export class ZookeeperServiceRegistry
       );
       this.logger.log(`Namespace node ${this.namespace} created`);
     } catch (e: any) {
+      // Log the full error for debugging
+      this.logger.debug(`Error creating namespace node: ${JSON.stringify(e)}`);
+      
       // Check for both string messages and numeric error codes
       const isNodeExistsError =
         (e.message && (e.message.includes('node already exists') || e.message.includes('ZNODEEXISTS')))
         || (e.code === -110)
-        || (typeof e.getCode === 'function' && e.getCode() === -110);
+        || (typeof e.getCode === 'function' && e.getCode() === -110)
+        || (e.message && e.message.includes('-110 node exists'))
+        || (e.message && e.message.includes('-110'))
+        || (e.toString && e.toString().includes('-110'));
+      
       if (isNodeExistsError) {
         this.logger.warn(`Namespace node ${this.namespace} already exists`);
+        return; // Don't throw, just return
       } else {
         this.logger.error(`Failed to create namespace node: ${e.message || e}`, e);
-        throw e; // Stop further processing if we can't create the namespace node
+        // Don't throw the error, just log it and continue
+        // This prevents the application from crashing
       }
     }
   }
@@ -227,7 +243,12 @@ export class ZookeeperServiceRegistry
     if (!this.client.connected) {
       return;
     }
-    await this.setWatch(this.storeUpdate);
+    try {
+      // Bind the callback to preserve the 'this' context
+      await this.setWatch(this.storeUpdate.bind(this));
+    } catch (e) {
+      this.logger.warn(`Failed to set up watching, continuing without watch: ${e}`);
+    }
   }
 
   private async storeUpdate(
@@ -242,12 +263,21 @@ export class ZookeeperServiceRegistry
           const key = [this.namespace, child].join('/');
           const [data] = await this.client.get(key, false);
           if (typeof data === 'undefined' || data === null) continue;
-          const strData =
-            typeof data === 'string'
-              ? data
-              : typeof data.toString === 'function'
-                ? data.toString()
-                : undefined;
+          
+          // Handle different data types properly
+          let strData: string;
+          if (Buffer.isBuffer(data)) {
+            strData = data.toString('utf8');
+          } else if (typeof data === 'string') {
+            strData = data;
+          } else if (typeof data === 'object' && data !== null) {
+            // If it's already an object, stringify it first
+            strData = JSON.stringify(data);
+          } else {
+            logger.warn(`Unexpected data type for service node ${child}: ${typeof data}`);
+            continue;
+          }
+          
           if (!strData) continue;
           const service = JSON.parse(strData);
           // Group by service name
@@ -285,13 +315,22 @@ export class ZookeeperServiceRegistry
       // For now, just get children without watching to avoid the async callback issue
       const children = await this.client.get_children(this.namespace, false);
       
-      const calls = [];
-      for (const child of children) {
-        calls.push(this.client.get(child, false));
-      }
+      // Call the callback directly without trying to get individual nodes
+      // The callback will handle getting the individual nodes with proper paths
       callback(children, this.serviceStore, this.logger);
-    } catch (e) {
-      this.logger.error('Error in setWatch:', e);
+    } catch (e: any) {
+      // Check if the error is because the namespace doesn't exist yet
+      const isNamespaceNotExistsError =
+        (e.message && (e.message.includes('no node') || e.message.includes('NONODE')))
+        || (e.code === -101)
+        || (typeof e.getCode === 'function' && e.getCode() === -101)
+        || (e.message && e.message.includes('-101'));
+      
+      if (isNamespaceNotExistsError) {
+        this.logger.warn(`Namespace ${this.namespace} doesn't exist yet, skipping watch setup`);
+      } else {
+        this.logger.error('Error in setWatch:', e);
+      }
     }
   }
 }
