@@ -1,13 +1,14 @@
 import { Logger } from '@nestjs/common';
-import { HeartbeatOptions } from '@swft-mt/common';
-import { HeartbeatTask } from '../interfaces';
+import { HeartbeatOptions, HeartbeatTask } from '../interfaces';
 
-const tasks = new Map<string, any>();
+const tasks = new Map<string, NodeJS.Timeout>();
 
 export class TtlScheduler {
+  logger = new Logger(TtlScheduler.name);
+
   constructor(
     private heartbeatOptions: HeartbeatOptions,
-    private task: HeartbeatTask
+    private task: HeartbeatTask,
   ) {}
 
   /**
@@ -27,11 +28,6 @@ export class TtlScheduler {
     tasks.set(instanceId, taskId);
   }
 
-  /**
-   * remove a service from the checks loop
-   *
-   * @param instanceId
-   */
   remove(instanceId: string): void {
     const taskId = tasks.get(instanceId);
     if (taskId) {
@@ -47,8 +43,7 @@ export class TtlScheduler {
     const ttlMinus1 = (this.heartbeatOptions.ttlInSeconds || 60) - 1;
     const min = Math.min(ttlMinus1, max);
     const heartbeatInterval = Math.round(1000 * min);
-
-    Logger.log(`computed heartbeat interval ${heartbeatInterval}`);
+    this.logger.log(`computed heartbeat interval ${heartbeatInterval}`);
 
     return heartbeatInterval;
   }

@@ -1,5 +1,12 @@
-import { HeartbeatOptions, PlainObject, Registration } from '@swft-mt/common';
-import { ConsulDiscoveryOptions } from './consul-discovery.options';
+import { PlainObject } from '../utils';
+import { DiscoveryOptions } from './discovery-options.interface';
+import { HeartbeatOptions } from './heartbeat.interface';
+import { Registration } from './registration.interface';
+import { ServiceRegistry } from './service-registry.interface';
+
+export interface ServiceRegistryBuilder {
+  build(): ServiceRegistry<Registration<any>>;
+}
 
 export interface RegistrationBuilder {
   serviceName(name: string): RegistrationBuilder;
@@ -20,7 +27,7 @@ export interface RegistrationBuilder {
 
   domain(domain: string): RegistrationBuilder;
 
-  discoveryOptions(options: ConsulDiscoveryOptions): RegistrationBuilder;
+  discoveryOptions(options: DiscoveryOptions): RegistrationBuilder;
 
   heartbeatOptions(options: HeartbeatOptions): RegistrationBuilder;
 

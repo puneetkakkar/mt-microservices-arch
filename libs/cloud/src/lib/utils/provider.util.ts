@@ -1,5 +1,6 @@
 import { Provider } from '@nestjs/common';
-import { ServiceStore, SERVICE_REGISTRY_CONFIG } from '@swft-mt/common';
+import { loadPackage } from '@nestjs/common/utils/load-package.util';
+import { SERVICE_REGISTRY_CONFIG, ServiceStore } from '@swft-mt/common';
 import { RegistryConfiguration } from '../interfaces';
 import { validateRegistryOptions } from './validate-registry-options.util';
 
@@ -28,7 +29,11 @@ export function getSharedProviderUtils(
 
     sharedProviders.push(ConsulServiceRegistry);
   } else if (registryOption.discoverer === 'zookeeper') {
-    const { ZookeeperServiceRegistry } = require('@swft-mt/zookeeper');
+    const importPackage = loadPackage(
+      '@swft-mt/zookeeper',
+      '@swft-mt/common',
+      () => require('@swft-mt/zookeeper'),
+    );
 
     configProvider.useValue = {
       service: registryOption.service,
@@ -39,7 +44,8 @@ export function getSharedProviderUtils(
       heartbeat: registryOption.heartbeat,
     };
 
-    sharedProviders.push(ZookeeperServiceRegistry);
+    sharedProviders.push(importPackage.ZookeeperServiceRegistry);
+    sharedProviders.push(importPackage.ZookeeperDiscoveryClient);
   }
 
   sharedProviders.push(configProvider);

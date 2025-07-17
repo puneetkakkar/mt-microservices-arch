@@ -1,23 +1,14 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
 import { CloudModuleOptions } from './interfaces';
-import { getSharedProviderUtils } from './utils';
+import { CloudCoreModule } from './cloud-core.module';
 
 @Global()
-@Module({
-  imports: [],
-  controllers: [],
-  providers: [],
-  exports: [],
-})
+@Module({})
 export class CloudModule {
   static forRoot(options: CloudModuleOptions): DynamicModule {
-    const sharedProviders = getSharedProviderUtils(options.registry);
-
     return {
       module: CloudModule,
-      providers: sharedProviders,
-      exports: sharedProviders,
-      global: true,
+      imports: [CloudCoreModule.forRoot(options)],
     };
   }
 }

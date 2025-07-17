@@ -1,11 +1,14 @@
-import { PlainObject, Registration } from '@swft-mt/common';
-import { ConsulDiscoveryOptions, Service } from '../interfaces';
+import { PlainObject, Registration, Service } from '@swft-mt/common';
+import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
 
-export class ConsulRegistration implements Registration<Service> {
+export class ZookeeperRegistration implements Registration<Service> {
   private newService: Service;
-  private discoveryOptions: ConsulDiscoveryOptions;
+  private discoveryOptions: ZookeeperDiscoveryOptions;
 
-  constructor(newService: Service, discoveryOptions: ConsulDiscoveryOptions) {
+  constructor(
+    newService: Service,
+    discoveryOptions: ZookeeperDiscoveryOptions,
+  ) {
     this.newService = newService;
     this.discoveryOptions = discoveryOptions;
   }
@@ -19,7 +22,7 @@ export class ConsulRegistration implements Registration<Service> {
   }
 
   getServiceId(): string {
-    return this.newService.name;
+    return this.newService.name || '';
   }
 
   getHost(): string {
@@ -44,7 +47,7 @@ export class ConsulRegistration implements Registration<Service> {
   }
 
   getMetadata(): PlainObject {
-    return this.newService.meta || {};
+    return this.newService.metadata || {};
   }
 
   getNodeID(): string {

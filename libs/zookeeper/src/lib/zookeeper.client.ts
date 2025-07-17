@@ -16,8 +16,8 @@ export class ZookeeperClient
   implements BeforeApplicationShutdown, OnModuleInit
 {
   private opts = {};
-  private connected = false;
-  private logg = new Logger(ZookeeperClient.name);
+  private readonly logg = new Logger(ZookeeperClient.name);
+  public connected = false;
 
   constructor(private readonly options: ZookeeperConfig) {
     super({
@@ -33,6 +33,19 @@ export class ZookeeperClient
 
   override close(): any | Promise<void> {
     super.close();
+  }
+
+  // Expose ZooKeeper methods
+  override async create(path: string, data: Buffer, flags: number): Promise<string> {
+    return super.create(path, data, flags);
+  }
+
+  override async get(path: string, watch: boolean): Promise<any[]> {
+    return super.get(path, watch);
+  }
+
+  override async delete_(path: string, version: number): Promise<void> {
+    return super.delete_(path, version);
   }
 
   override async connect(): Promise<void> {
