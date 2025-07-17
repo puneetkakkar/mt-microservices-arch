@@ -5,7 +5,11 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { SERVICE_REGISTRY_CONFIG, ServiceStore } from '@swft-mt/common';
+import {
+  Registration,
+  SERVICE_REGISTRY_CONFIG,
+  ServiceStore,
+} from '@swft-mt/common';
 import * as consul from 'consul';
 import * as Consul from 'consul';
 import { Watch } from 'consul';
@@ -13,7 +17,6 @@ import { isUndefined, omitBy } from 'lodash';
 import { ConsulClient } from '../consul.client';
 import { Service } from '../interfaces';
 import { ConsulRegistryOptions } from '../interfaces/consul-registry.options';
-import { Registration } from '../interfaces/registration.interface';
 import { ConsulHeartbeatTask } from '../service-discovery/consul-heartbeat.task';
 import { TtlScheduler } from '../service-health/ttl-scheduler';
 import { consulServiceToServiceInstance } from '../utils/consul.utils';
@@ -82,8 +85,11 @@ export class ConsulServiceRegistry implements OnModuleInit, OnModuleDestroy {
   private generateService(): RegisterOptions {
     let check = this.registration.getService().check;
 
-    check = omitBy(check, isUndefined);
-    const { checks, ...rest } = this.options.service;
+    // Ensure all required properties are present, even if undefined
+    check = { ...check };
+    check = omitBy(check, isUndefined) as typeof check;
+
+    const { checks, ...rest } = this.options.service ?? {};
 
     return {
       ...rest,
