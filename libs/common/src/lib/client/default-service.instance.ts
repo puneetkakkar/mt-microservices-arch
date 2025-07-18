@@ -1,8 +1,6 @@
-import {
-  PlainObject,
-  ServiceInstance,
-  ServiceInstanceState,
-} from '@nexuskit/common';
+import { ServiceInstanceState } from '../health';
+import { ServiceInstance } from '../interfaces';
+import { PlainObject } from '../utils';
 import { ServiceInstanceOptions } from './service-instance.options';
 
 export class DefaultServiceInstance implements ServiceInstance {
