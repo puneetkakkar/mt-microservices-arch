@@ -13,7 +13,7 @@ A production-ready, enterprise-grade microservice architecture foundation built 
 ### Core Architecture
 
 - **🏗️ Monorepo Structure**: Built with Nx for efficient development and build processes
-- **🔍 Service Discovery**: Automatic service registration and discovery using Consul
+- **🔍 Service Discovery**: Automatic service registration and discovery using Consul or ZooKeeper
 - **⚖️ Load Balancing**: Intelligent load balancing with configurable strategies
 - **🔄 Dynamic Scaling**: Support for multiple instances of the same service with dynamic port allocation
 - **🌐 HTTP Client**: Declarative HTTP service clients with automatic service resolution
@@ -23,7 +23,7 @@ A production-ready, enterprise-grade microservice architecture foundation built 
 
 ### Service Infrastructure
 
-- **📡 Service Registry**: Centralized service registration and management via Consul
+- **📡 Service Registry**: Centralized service registration and management via Consul or ZooKeeper
 - **🔧 Configuration Management**: Flexible configuration loading from multiple sources
 - **📊 Service Monitoring**: Real-time service health and status tracking
 - **🔄 Retry Mechanisms**: Robust error handling with configurable retry policies
@@ -53,7 +53,8 @@ This project follows a modular microservice architecture with the following key 
 │   ├── cloud/              # Cloud-native abstractions
 │   ├── common/             # Shared utilities and interfaces
 │   ├── consul/             # Service discovery and registry
-│   └── loadbalancer/       # Load balancing strategies
+│   ├── loadbalancer/       # Load balancing strategies
+│   └── zookeeper/          # ZooKeeper service discovery and registry
 ├── scripts/                # Service management scripts
 │   ├── start-service.sh    # Dynamic service startup
 │   ├── stop-service.sh     # Service shutdown
@@ -69,6 +70,7 @@ This project follows a modular microservice architecture with the following key 
 - **`@swft-mt/common`**: Shared utilities, interfaces, and common functionality
 - **`@swft-mt/consul`**: Consul integration for service discovery and health checks
 - **`@swft-mt/loadbalancer`**: Configurable load balancing with multiple strategies
+- **`@swft-mt/zookeeper`**: ZooKeeper integration for service discovery and registry
 
 ## 🛠️ Technology Stack
 
@@ -78,7 +80,7 @@ This project follows a modular microservice architecture with the following key 
 | **Framework**        | NestJS     | 10.0+   |
 | **Language**         | TypeScript | 5.0+    |
 | **Build System**     | Nx         | 17.0+   |
-| **Service Registry** | Consul     | 1.21+   |
+| **Service Registry** | Consul/ZooKeeper | 1.21+/3.8+ |
 | **HTTP Client**      | Got        | 11.8.2  |
 | **Testing**          | Jest       | 29.0+   |
 | **Linting**          | ESLint     | 8.0+    |
@@ -109,14 +111,17 @@ This project follows a modular microservice architecture with the following key 
    yarn install
    ```
 
-3. **Start Consul (required for service discovery)**
+3. **Start Service Registry (required for service discovery)**
 
    ```bash
-   # Using Docker (recommended)
+   # Using Consul (recommended)
    docker run -d --name consul -p 8500:8500 hashicorp/consul:latest
 
+   # Or using ZooKeeper
+   docker run -d --name zookeeper -p 2181:2181 zookeeper:3.8
+
    # Or install locally
-   # Follow instructions at https://www.consul.io/docs/install
+   # Follow instructions at https://www.consul.io/docs/install or https://zookeeper.apache.org/doc/current/zookeeperStarted.html
    ```
 
 4. **Start the development servers**
@@ -169,6 +174,13 @@ The project includes powerful scripts for managing multiple service instances:
 ./scripts/test-loadbalancer.sh service-1 5
 ```
 
+#### Test ZooKeeper Integration
+
+```bash
+# Test ZooKeeper service discovery and registration
+./scripts/test-zookeeper.sh
+```
+
 #### Stop Services
 
 ```bash
@@ -195,20 +207,27 @@ The project includes powerful scripts for managing multiple service instances:
    import { ClientModule } from '@swft-mt/client';
    import { CloudModule } from '@swft-mt/cloud';
    import { ConsulModule } from '@swft-mt/consul';
+   import { ZookeeperModule } from '@swft-mt/zookeeper';
    import { LoadBalancerModule } from '@swft-mt/loadbalancer';
 
    @Module({
      imports: [
        BootstrapModule.forRoot(),
+       // Using Consul
        ConsulModule.forRoot({
          host: 'localhost',
          port: '8500',
          promisify: true,
          secure: false,
        }),
+       // Or using ZooKeeper
+       ZookeeperModule.forRoot({
+         host: 'localhost:2181',
+         retryAttempts: 6000,
+       }),
        CloudModule.forRoot({
          registry: {
-           discoverer: 'consul',
+           discoverer: 'consul', // or 'zookeeper'
            service: {
              name: 'my-service',
              address: 'localhost',
@@ -285,6 +304,8 @@ config:
 | `NODE_ENV`    | Environment  | development |
 | `CONSUL_HOST` | Consul host  | localhost   |
 | `CONSUL_PORT` | Consul port  | 8500        |
+| `ZOOKEEPER_HOST` | ZooKeeper host | localhost |
+| `ZOOKEEPER_PORT` | ZooKeeper port | 2181 |
 
 ### Service Configuration
 
@@ -362,7 +383,9 @@ curl http://localhost:3334/api/health
 # Response: {"status":"ok","timestamp":"2025-07-05T00:30:00.000Z"}
 ```
 
-### Consul Health Monitoring
+### Service Registry Health Monitoring
+
+#### Consul Health Monitoring
 
 ```bash
 # View all services in Consul
@@ -373,6 +396,19 @@ curl http://localhost:8500/v1/agent/checks | jq
 
 # View healthy service instances
 curl "http://localhost:8500/v1/health/service/service-2?passing=true" | jq
+```
+
+#### ZooKeeper Health Monitoring
+
+```bash
+# View all services in ZooKeeper
+docker exec zookeeper zkCli.sh -server localhost:2181 ls /swft-mt-service
+
+# View service details
+docker exec zookeeper zkCli.sh -server localhost:2181 get /swft-mt-service/service__service-2__1.0.0-<uuid>
+
+# View service instances
+docker exec zookeeper zkCli.sh -server localhost:2181 ls /swft-mt-service/service__service-2__1.0.0-<uuid>
 ```
 
 ## 🔒 Security
@@ -460,6 +496,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [NestJS](https://nestjs.com/) - Progressive Node.js framework
 - [Nx](https://nx.dev/) - Build system with first-class support for many frontend and backend technologies
 - [Consul](https://www.consul.io/) - Service mesh solution providing a full featured control plane
+- [ZooKeeper](https://zookeeper.apache.org/) - Distributed coordination service for distributed applications
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript at scale
 
 ---
