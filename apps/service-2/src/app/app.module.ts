@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ClientModule } from '@swft-mt/client';
-import { CloudModule } from '@swft-mt/cloud';
-import { LoadBalancerModule } from '@swft-mt/loadbalancer';
-import { ZookeeperModule } from '@swft-mt/zookeeper';
+import { ClientModule } from '@nexuskit/client';
+import { CloudModule } from '@nexuskit/cloud';
+import { LoadBalancerModule } from '@nexuskit/loadbalancer';
+import { ZookeeperModule } from '@nexuskit/zookeeper';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 

@@ -1,4 +1,4 @@
-# Multi-Tenant Microservice Architecture
+# NexusKit: The Complete Microservices Toolkit
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -6,7 +6,7 @@
 [![NestJS](https://img.shields.io/badge/NestJS-10.0+-red.svg)](https://nestjs.com/)
 [![Nx](https://img.shields.io/badge/Nx-17.0+-purple.svg)](https://nx.dev/)
 
-A production-ready, enterprise-grade microservice architecture foundation built with NestJS and Nx. This framework provides a robust, scalable, and maintainable foundation for building distributed systems with built-in service discovery, load balancing, dynamic scaling, and multi-tenancy support.
+A production-ready, enterprise-grade microservices toolkit built with NestJS and Nx. NexusKit provides a robust, scalable, and maintainable foundation for building distributed systems with built-in service discovery, load balancing, dynamic scaling, multi-tenancy support, and extensible libraries for CQRS, gRPC, GraphQL, resilience, and more.
 
 ## 🚀 Features
 
@@ -64,27 +64,27 @@ This project follows a modular microservice architecture with the following key 
 
 ### Key Libraries
 
-- **`@swft-mt/bootstrap`**: Configuration management with file-based loading
-- **`@swft-mt/client`**: Declarative HTTP service clients with service discovery
-- **`@swft-mt/cloud`**: Cloud-native service abstractions and registry management
-- **`@swft-mt/common`**: Shared utilities, interfaces, and common functionality
-- **`@swft-mt/consul`**: Consul integration for service discovery and health checks
-- **`@swft-mt/loadbalancer`**: Configurable load balancing with multiple strategies
-- **`@swft-mt/zookeeper`**: ZooKeeper integration for service discovery and registry
+- **`@nexuskit/bootstrap`**: Configuration management with file-based loading
+- **`@nexuskit/client`**: Declarative HTTP service clients with service discovery
+- **`@nexuskit/cloud`**: Cloud-native service abstractions and registry management
+- **`@nexuskit/common`**: Shared utilities, interfaces, and common functionality
+- **`@nexuskit/consul`**: Consul integration for service discovery and health checks
+- **`@nexuskit/loadbalancer`**: Configurable load balancing with multiple strategies
+- **`@nexuskit/zookeeper`**: ZooKeeper integration for service discovery and registry
 
 ## 🛠️ Technology Stack
 
-| Component            | Technology | Version |
-| -------------------- | ---------- | ------- |
-| **Runtime**          | Node.js    | 18+     |
-| **Framework**        | NestJS     | 10.0+   |
-| **Language**         | TypeScript | 5.0+    |
-| **Build System**     | Nx         | 17.0+   |
+| Component            | Technology       | Version    |
+| -------------------- | ---------------- | ---------- |
+| **Runtime**          | Node.js          | 18+        |
+| **Framework**        | NestJS           | 10.0+      |
+| **Language**         | TypeScript       | 5.0+       |
+| **Build System**     | Nx               | 17.0+      |
 | **Service Registry** | Consul/ZooKeeper | 1.21+/3.8+ |
-| **HTTP Client**      | Got        | 11.8.2  |
-| **Testing**          | Jest       | 29.0+   |
-| **Linting**          | ESLint     | 8.0+    |
-| **Formatting**       | Prettier   | 3.0+    |
+| **HTTP Client**      | Got              | 11.8.2     |
+| **Testing**          | Jest             | 29.0+      |
+| **Linting**          | ESLint           | 8.0+       |
+| **Formatting**       | Prettier         | 3.0+       |
 
 ## 📦 Installation
 
@@ -203,12 +203,12 @@ The project includes powerful scripts for managing multiple service instances:
 
    ```typescript
    import { Module } from '@nestjs/common';
-   import { BootstrapModule } from '@swft-mt/bootstrap';
-   import { ClientModule } from '@swft-mt/client';
-   import { CloudModule } from '@swft-mt/cloud';
-   import { ConsulModule } from '@swft-mt/consul';
-   import { ZookeeperModule } from '@swft-mt/zookeeper';
-   import { LoadBalancerModule } from '@swft-mt/loadbalancer';
+   import { BootstrapModule } from '@nexuskit/bootstrap';
+   import { ClientModule } from '@nexuskit/client';
+   import { CloudModule } from '@nexuskit/cloud';
+   import { ConsulModule } from '@nexuskit/consul';
+   import { ZookeeperModule } from '@nexuskit/zookeeper';
+   import { LoadBalancerModule } from '@nexuskit/loadbalancer';
 
    @Module({
      imports: [
@@ -258,7 +258,7 @@ The project includes powerful scripts for managing multiple service instances:
 
 ```typescript
 import { Controller, Get } from '@nestjs/common';
-import { HttpClient, HttpServiceClient } from '@swft-mt/client';
+import { HttpClient, HttpServiceClient } from '@nexuskit/client';
 
 @Controller()
 export class AppController {
@@ -298,14 +298,14 @@ config:
 
 ### Environment Variables
 
-| Variable      | Description  | Default     |
-| ------------- | ------------ | ----------- |
-| `PORT`        | Service port | 3333        |
-| `NODE_ENV`    | Environment  | development |
-| `CONSUL_HOST` | Consul host  | localhost   |
-| `CONSUL_PORT` | Consul port  | 8500        |
-| `ZOOKEEPER_HOST` | ZooKeeper host | localhost |
-| `ZOOKEEPER_PORT` | ZooKeeper port | 2181 |
+| Variable         | Description    | Default     |
+| ---------------- | -------------- | ----------- |
+| `PORT`           | Service port   | 3333        |
+| `NODE_ENV`       | Environment    | development |
+| `CONSUL_HOST`    | Consul host    | localhost   |
+| `CONSUL_PORT`    | Consul port    | 8500        |
+| `ZOOKEEPER_HOST` | ZooKeeper host | localhost   |
+| `ZOOKEEPER_PORT` | ZooKeeper port | 2181        |
 
 ### Service Configuration
 
@@ -450,13 +450,13 @@ spec:
         app: service-1
     spec:
       containers:
-      - name: service-1
-        image: your-registry/service-1:latest
-        ports:
-        - containerPort: 3333
-        env:
-        - name: PORT
-          value: "3333"
+        - name: service-1
+          image: your-registry/service-1:latest
+          ports:
+            - containerPort: 3333
+          env:
+            - name: PORT
+              value: '3333'
 ```
 
 ## 🤝 Contributing

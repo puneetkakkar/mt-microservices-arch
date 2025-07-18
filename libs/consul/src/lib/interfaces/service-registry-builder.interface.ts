@@ -1,4 +1,4 @@
-import { HeartbeatOptions, PlainObject, Registration } from '@swft-mt/common';
+import { HeartbeatOptions, PlainObject, Registration } from '@nexuskit/common';
 import { ConsulDiscoveryOptions } from './consul-discovery.options';
 
 export interface RegistrationBuilder {

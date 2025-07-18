@@ -13,7 +13,7 @@ import {
   ServiceStore,
   TtlScheduler,
   sleep,
-} from '@swft-mt/common';
+} from '@nexuskit/common';
 import ZooKeeper from 'zookeeper';
 import { ZookeeperHeartbeatTask } from '../discovery/zookeeper-heartbeat.task';
 import { ZookeeperClient } from '../zookeeper.client';

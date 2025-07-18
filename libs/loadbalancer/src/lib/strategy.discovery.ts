@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ClassWithArgs, getMetadataStorage } from '@swft-mt/common';
+import { ClassWithArgs, getMetadataStorage } from '@nexuskit/common';
 import { StrategyRegistry } from './strategy.registry';
 
 @Injectable()

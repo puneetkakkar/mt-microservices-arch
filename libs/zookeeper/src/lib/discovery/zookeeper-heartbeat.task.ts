@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { HeartbeatTask } from '@swft-mt/common';
+import { HeartbeatTask } from '@nexuskit/common';
 import { ZookeeperClient } from '../zookeeper.client';
 
 export class ZookeeperHeartbeatTask implements HeartbeatTask {

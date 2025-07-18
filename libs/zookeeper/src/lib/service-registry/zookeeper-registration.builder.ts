@@ -3,7 +3,7 @@ import {
   PlainObject,
   RegistrationBuilder,
   Service,
-} from '@swft-mt/common';
+} from '@nexuskit/common';
 import * as uuid from 'uuid';
 import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
 import { ZookeeperRegistration } from './zookeeper-registration';

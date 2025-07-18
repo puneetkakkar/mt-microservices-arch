@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
-import { BootConfig } from '@swft-mt/bootstrap';
+import { BootConfig } from '@nexuskit/bootstrap';
 import { isEmpty, isPlainObject, merge } from 'lodash';
 import { ZookeeperModuleOptions } from './zookeeper-module.options';
 import { ZOOKEEPER_CONFIG_OPTIONS } from './zookeeper.constant';

@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
-import { BootConfig } from '@swft-mt/bootstrap';
+import { BootConfig } from '@nexuskit/bootstrap';
 import { isEmpty, isPlainObject, merge } from 'lodash';
 import { LoadBalancerModuleOptions } from './interfaces/loadbalancer-module-options.interface';
 import { LOAD_BALANCE_CONFIG_OPTIONS } from './loadbalancer.constants';
@@ -14,7 +14,7 @@ export class LoadBalancerConfig implements OnModuleInit {
   constructor(
     @Inject(LOAD_BALANCE_CONFIG_OPTIONS)
     private opts: LoadBalancerModuleOptions,
-    @Optional() private readonly bootConfig: BootConfig
+    @Optional() private readonly bootConfig: BootConfig,
   ) {}
 
   get config(): LoadBalancerModuleOptions {
@@ -46,7 +46,7 @@ export class LoadBalancerConfig implements OnModuleInit {
     if (this.bootConfig) {
       _tempConfig = this.bootConfig.get<LoadBalancerModuleOptions>(
         this.CONFIG_PREFIX,
-        this.opts
+        this.opts,
       );
     }
 
@@ -56,7 +56,7 @@ export class LoadBalancerConfig implements OnModuleInit {
 
     if (!isPlainObject(this.options) || isEmpty(this.options)) {
       throw new Error(
-        'loadbalancer configuration option is missing in bootstrap and module config'
+        'loadbalancer configuration option is missing in bootstrap and module config',
       );
     }
   }

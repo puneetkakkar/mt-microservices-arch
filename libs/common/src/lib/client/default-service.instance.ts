@@ -2,7 +2,7 @@ import {
   PlainObject,
   ServiceInstance,
   ServiceInstanceState,
-} from '@swft-mt/common';
+} from '@nexuskit/common';
 import { ServiceInstanceOptions } from './service-instance.options';
 
 export class DefaultServiceInstance implements ServiceInstance {
@@ -62,7 +62,7 @@ export class DefaultServiceInstance implements ServiceInstance {
     if (this.opts.metadata instanceof Map) {
       return Object.fromEntries(this.opts.metadata);
     }
-    
+
     return this.opts.metadata || {};
   }
 }

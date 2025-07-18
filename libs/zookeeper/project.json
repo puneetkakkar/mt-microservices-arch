@@ -1,5 +1,5 @@
 {
-  "name": "zookeeper",
+  "name": "@nexuskit/zookeeper",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/zookeeper/src",
   "projectType": "library",

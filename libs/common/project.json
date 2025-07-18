@@ -1,5 +1,5 @@
 {
-  "name": "@swft-mt/common",
+  "name": "@nexuskit/common",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/common/src",
   "projectType": "library",

@@ -2,7 +2,7 @@ import {
   PlainObject,
   ServiceInstance,
   ServiceInstanceState,
-} from '@swft-mt/common';
+} from '@nexuskit/common';
 import { ServiceInstanceOptions } from './interfaces/service-instance-options';
 
 export class DefaultServiceInstance implements ServiceInstance {

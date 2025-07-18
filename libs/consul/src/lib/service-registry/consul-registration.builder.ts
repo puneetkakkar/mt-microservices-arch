@@ -1,9 +1,8 @@
-import { IpUtils, PlainObject } from '@swft-mt/common';
+import { HeartbeatOptions, IpUtils, PlainObject } from '@nexuskit/common';
 import * as uuid from 'uuid';
 import {
   Check,
   ConsulDiscoveryOptions,
-  HeartbeatOptions,
   RegistrationBuilder,
   Service,
 } from '../interfaces';

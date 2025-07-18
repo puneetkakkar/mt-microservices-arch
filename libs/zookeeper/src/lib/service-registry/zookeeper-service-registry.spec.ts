@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HeartbeatOptions, ServiceStore } from '@swft-mt/common';
+import { HeartbeatOptions, ServiceStore } from '@nexuskit/common';
 import ZooKeeper from 'zookeeper';
 import { ZookeeperClient } from '../zookeeper.client';
 import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
@@ -8,8 +8,8 @@ import { ZookeeperServiceRegistry } from './zookeeper-service-registry';
 
 // Mock the Zookeeper client
 jest.mock('../zookeeper.client');
-jest.mock('@swft-mt/common', () => ({
-  ...jest.requireActual('@swft-mt/common'),
+jest.mock('@nexuskit/common', () => ({
+  ...jest.requireActual('@nexuskit/common'),
   sleep: jest.fn().mockResolvedValue(undefined),
 }));
 

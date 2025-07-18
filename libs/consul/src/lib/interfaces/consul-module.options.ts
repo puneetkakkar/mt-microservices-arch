@@ -1,4 +1,4 @@
-import { BaseClientOptions } from '@swft-mt/common';
+import { BaseClientOptions } from '@nexuskit/common';
 import { ConsulOptions } from 'consul';
 
 export interface ConsulModuleOptions extends ConsulOptions, BaseClientOptions {

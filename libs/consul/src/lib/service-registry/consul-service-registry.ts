@@ -9,7 +9,7 @@ import {
   Registration,
   SERVICE_REGISTRY_CONFIG,
   ServiceStore,
-} from '@swft-mt/common';
+} from '@nexuskit/common';
 import * as consul from 'consul';
 import * as Consul from 'consul';
 import { Watch } from 'consul';

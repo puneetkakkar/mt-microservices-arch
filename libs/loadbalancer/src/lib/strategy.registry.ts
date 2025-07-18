@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ServiceInstance } from '@swft-mt/common';
+import { ServiceInstance } from '@nexuskit/common';
 import { BaseStrategy } from './base.strategy';
 
 @Injectable()

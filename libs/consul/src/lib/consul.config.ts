@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
-import { BootConfig } from '@swft-mt/bootstrap';
+import { BootConfig } from '@nexuskit/bootstrap';
 import { isEmpty, isPlainObject, merge } from 'lodash';
 import { CONSUL_CONFIG_OPTIONS } from './consul.constants';
 import { ConsulModuleOptions } from './interfaces/consul-module.options';
@@ -11,7 +11,7 @@ export class ConsulConfig implements OnModuleInit {
 
   constructor(
     @Inject(CONSUL_CONFIG_OPTIONS) private opts: ConsulModuleOptions,
-    @Optional() private readonly bootConfig: BootConfig
+    @Optional() private readonly bootConfig: BootConfig,
   ) {}
 
   get config(): ConsulModuleOptions {
@@ -23,7 +23,7 @@ export class ConsulConfig implements OnModuleInit {
     if (this.bootConfig) {
       _tempConfig = this.bootConfig.get<ConsulModuleOptions>(
         this.CONFIG_PREFIX,
-        this.opts
+        this.opts,
       );
     }
 
@@ -33,7 +33,7 @@ export class ConsulConfig implements OnModuleInit {
 
     if (!isPlainObject(this.options) || isEmpty(this.options)) {
       throw new Error(
-        'consul configuration is missing in bootstrap and module config'
+        'consul configuration is missing in bootstrap and module config',
       );
     }
   }

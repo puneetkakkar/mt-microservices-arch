@@ -1,4 +1,4 @@
-import { PlainObject, Registration } from '@swft-mt/common';
+import { PlainObject, Registration } from '@nexuskit/common';
 import { ConsulDiscoveryOptions, Service } from '../interfaces';
 
 export class ConsulRegistration implements Registration<Service> {

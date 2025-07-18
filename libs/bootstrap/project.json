@@ -1,5 +1,5 @@
 {
-  "name": "@swft-mt/bootstrap",
+  "name": "@nexuskit/bootstrap",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/bootstrap/src",
   "projectType": "library",

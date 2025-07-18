@@ -1,4 +1,4 @@
-import { DiscoveryOptions } from '@swft-mt/common';
+import { DiscoveryOptions } from '@nexuskit/common';
 
 type ConsulDiscoveryOption = {
   scheme?: string;

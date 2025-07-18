@@ -4,7 +4,7 @@ import {
   ServerCriticalException,
   ServiceInstance,
   ServiceStore,
-} from '@swft-mt/common';
+} from '@nexuskit/common';
 import { BaseStrategy } from './base.strategy';
 import { LoadBalancerRequest } from './core/loadbalancer.request';
 import { ILoadBalancerClient } from './interfaces/loadbalancer-client.interface';
@@ -15,7 +15,8 @@ import { StrategyRegistry } from './strategy.registry';
 
 @Injectable()
 export class LoadBalancerClient
-  implements ILoadBalancerClient, ServiceInstanceChooser, OnModuleInit {
+  implements ILoadBalancerClient, ServiceInstanceChooser, OnModuleInit
+{
   private readonly serviceStrategies = new Map<
     string,
     BaseStrategy<ServiceInstance>
@@ -24,7 +25,7 @@ export class LoadBalancerClient
   constructor(
     private readonly properties: LoadBalancerConfig,
     private readonly serviceStore: ServiceStore,
-    private readonly registry: StrategyRegistry
+    private readonly registry: StrategyRegistry,
   ) {}
 
   private init() {
@@ -44,7 +45,7 @@ export class LoadBalancerClient
 
       const strategyName = this.properties.getStrategy(service);
       const StrategyClass = this.registry.getStrategy(strategyName);
-      
+
       if (StrategyClass) {
         this.createStrategy(service, nodes, StrategyClass);
       }
@@ -54,13 +55,14 @@ export class LoadBalancerClient
   private createStrategy(
     serviceName: string,
     nodes: ServiceInstance[],
-    StrategyClass: any
+    StrategyClass: any,
   ) {
-    const strategyInstance = (new StrategyClass() as unknown) as BaseStrategy<ServiceInstance>;
+    const strategyInstance =
+      new StrategyClass() as unknown as BaseStrategy<ServiceInstance>;
 
     strategyInstance.init(
       serviceName,
-      new ServiceInstancePool(serviceName, nodes)
+      new ServiceInstancePool(serviceName, nodes),
     );
 
     this.serviceStrategies.set(serviceName, strategyInstance);
@@ -70,7 +72,7 @@ export class LoadBalancerClient
     const strategy = this.serviceStrategies.get(serviceId);
     if (!strategy) {
       throw new Error(
-        `service [${serviceId}] does not exist with loadbalance strategy`
+        `service [${serviceId}] does not exist with loadbalance strategy`,
       );
     }
 
@@ -90,12 +92,12 @@ export class LoadBalancerClient
   execute<T>(
     serviceId: string,
     node: ServiceInstance,
-    request: LoadBalancerRequest<T>
+    request: LoadBalancerRequest<T>,
   ): T;
   async execute<T>(
     serviceId: string,
     nodeOrRequest: LoadBalancerRequest<T> | ServiceInstance,
-    request?: LoadBalancerRequest<T>
+    request?: LoadBalancerRequest<T>,
   ): Promise<T> {
     if (!serviceId) {
       throw new Error('serviceId is missing');

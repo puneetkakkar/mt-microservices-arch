@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { stringToObjectType } from '@swft-mt/common';
+import { stringToObjectType } from '@nexuskit/common';
 import { existsSync, readFileSync } from 'fs';
 import { basename, dirname, resolve, toNamespacedPath } from 'path';
 import { BOOTSTRAP_CONFIGURATION_OPTIONS } from './bootstrap.constants';
@@ -12,7 +12,7 @@ export class BootConfigFileLoader {
 
   constructor(
     @Inject(BOOTSTRAP_CONFIGURATION_OPTIONS)
-    private readonly options: BootstrapModuleOptions
+    private readonly options: BootstrapModuleOptions,
   ) {
     this.files = this.getFilesPath();
   }

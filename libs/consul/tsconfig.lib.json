@@ -8,5 +8,5 @@
     "target": "es2021"
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts", "jest.config.ts"],
-  "include": ["src/**/*.ts", "../common/src/lib/interfaces/registration.interface.ts", "../common/src/lib/interfaces/heartbeat.interface.ts", "../common/src/lib/utils/sleep.util.ts"]
+  "include": ["src/**/*.ts"]
 }
