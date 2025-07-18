@@ -50,6 +50,10 @@ export class ZookeeperServiceRegistry
         throw Error('ZookeeperDiscoveryOptions is required.');
       }
 
+      if (!this.options.service?.name || this.options.service.name.trim() === '') {
+        throw Error('Service name is required');
+      }
+
       this.registration = new ZookeeperRegistrationBuilder()
         .discoveryOptions(this.options.discovery)
         .heartbeatOptions(this.options.heartbeat)
@@ -92,7 +96,16 @@ export class ZookeeperServiceRegistry
       await this.watchAll();
     } catch (e) {
       this.logger.error('Error in init method:', e);
-      // Don't throw the error, just log it and continue
+      // Re-throw validation errors but handle other errors gracefully
+      if (e instanceof Error && (
+        e.message === 'HeartbeatOptions is required' || 
+        e.message === 'ZookeeperDiscoveryOptions is required.' ||
+        e.message === 'Service name is required' ||
+        e.message === 'Failed to connect to zookeeper within timeout period'
+      )) {
+        throw e;
+      }
+      // Don't throw other errors, just log them and continue
       // This prevents the application from crashing
     }
   }
@@ -122,7 +135,13 @@ export class ZookeeperServiceRegistry
   }
 
   async onModuleDestroy() {
-    await this.deregister();
+    try {
+      if (this.registration) {
+        await this.deregister();
+      }
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 
   async register(): Promise<void> {
@@ -134,13 +153,16 @@ export class ZookeeperServiceRegistry
     );
     try {
       const service = this.generateService();
-      const loop = true;
-      while (loop) {
+      let attempts = 0;
+      const maxAttempts = 5; // Limit retry attempts to prevent infinite loops
+      
+      while (attempts < maxAttempts) {
         try {
           // Wait for zookeeper connection
           if (!this.client.connected) {
             this.logger.warn('Waiting for zookeeper connection...');
             await sleep(1000);
+            attempts++;
             continue;
           }
 
@@ -155,7 +177,14 @@ export class ZookeeperServiceRegistry
           this.logger.log('service registered');
           break;
         } catch (e) {
-          this.logger.error(`problem registering service, retrying...`, e);
+          attempts++;
+          this.logger.error(`problem registering service, retrying... (attempt ${attempts}/${maxAttempts})`, e);
+          
+          if (attempts >= maxAttempts) {
+            this.logger.error(`Failed to register service after ${maxAttempts} attempts`);
+            throw e;
+          }
+          
           await sleep(3000);
         }
       }
@@ -258,11 +287,29 @@ export class ZookeeperServiceRegistry
   ) {
     try {
       const serviceMap: Map<string, any[]> = new Map();
+      
+      // Ensure children is an array and iterable
+      if (!Array.isArray(children)) {
+        logger.warn('Children is not an array, skipping service discovery update');
+        return;
+      }
+      
       for (const child of children) {
         try {
           const key = [this.namespace, child].join('/');
-          const [data] = await this.client.get(key, false);
-          if (typeof data === 'undefined' || data === null) continue;
+          const result = await this.client.get(key, false);
+          
+          // The get method returns [data, stats], so we need to extract the data
+          if (!Array.isArray(result) || result.length === 0) {
+            logger.warn(`No data returned for service node ${child}`);
+            continue;
+          }
+          
+          const data = result[0];
+          if (typeof data === 'undefined' || data === null) {
+            logger.warn(`Null or undefined data for service node ${child}`);
+            continue;
+          }
           
           // Handle different data types properly
           let strData: string;
@@ -271,15 +318,38 @@ export class ZookeeperServiceRegistry
           } else if (typeof data === 'string') {
             strData = data;
           } else if (typeof data === 'object' && data !== null) {
-            // If it's already an object, stringify it first
-            strData = JSON.stringify(data);
+            // If it's already an object, try to stringify it
+            try {
+              strData = JSON.stringify(data);
+            } catch (stringifyError) {
+              logger.warn(`Failed to stringify object data for service node ${child}: ${stringifyError}`);
+              continue;
+            }
           } else {
-            logger.warn(`Unexpected data type for service node ${child}: ${typeof data}`);
+            logger.warn(`Unexpected data type for service node ${child}: ${typeof data}, value: ${data}`);
             continue;
           }
           
-          if (!strData) continue;
-          const service = JSON.parse(strData);
+          if (!strData || strData.trim() === '') {
+            logger.warn(`Empty data for service node ${child}`);
+            continue;
+          }
+          
+          // Try to parse the JSON data
+          let service: any;
+          try {
+            service = JSON.parse(strData);
+          } catch (parseError) {
+            logger.error(`Failed to parse JSON for service node ${child}. Data: "${strData}"`, parseError);
+            continue;
+          }
+          
+          // Validate that we have a service object with a name
+          if (!service || typeof service !== 'object' || !service.name) {
+            logger.warn(`Invalid service data for node ${child}: missing name property`);
+            continue;
+          }
+          
           // Group by service name
           if (!serviceMap.has(service.name)) {
             serviceMap.set(service.name, []);
@@ -289,6 +359,7 @@ export class ZookeeperServiceRegistry
           logger.error(`Failed to fetch or parse service node ${child}:`, e);
         }
       }
+      
       // Convert to ZookeeperServiceInstance and update store
       for (const [name, services] of serviceMap.entries()) {
         const instances = services.map(
