@@ -1,13 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Logger } from '@nestjs/common';
-import { ZookeeperServiceRegistry } from './zookeeper-service-registry';
-import { ZookeeperClient } from '../zookeeper.client';
-import { ZookeeperRegistryOptions } from './zookeeper-registry.options';
-import { ServiceStore } from '@swft-mt/common';
-import { ZookeeperRegistrationBuilder } from './zookeeper-registration.builder';
-import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
-import { HeartbeatOptions } from '@swft-mt/common';
+import { HeartbeatOptions, ServiceStore } from '@swft-mt/common';
 import ZooKeeper from 'zookeeper';
+import { ZookeeperClient } from '../zookeeper.client';
+import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
+import { ZookeeperRegistryOptions } from './zookeeper-registry.options';
+import { ZookeeperServiceRegistry } from './zookeeper-service-registry';
 
 // Mock the Zookeeper client
 jest.mock('../zookeeper.client');
@@ -98,7 +95,9 @@ describe('ZookeeperServiceRegistry', () => {
       ],
     }).compile();
 
-    serviceRegistry = module.get<ZookeeperServiceRegistry>(ZookeeperServiceRegistry);
+    serviceRegistry = module.get<ZookeeperServiceRegistry>(
+      ZookeeperServiceRegistry,
+    );
   });
 
   afterEach(() => {
@@ -119,7 +118,9 @@ describe('ZookeeperServiceRegistry', () => {
       await serviceRegistry.init();
 
       expect(serviceRegistry.registration).toBeDefined();
-      expect(serviceRegistry.registration?.getInstanceId()).toContain('test-service');
+      expect(serviceRegistry.registration?.getInstanceId()).toContain(
+        'test-service',
+      );
     });
 
     it('should throw error when heartbeat options are missing', async () => {
@@ -133,9 +134,13 @@ describe('ZookeeperServiceRegistry', () => {
         ],
       }).compile();
 
-      const invalidRegistry = module.get<ZookeeperServiceRegistry>(ZookeeperServiceRegistry);
+      const invalidRegistry = module.get<ZookeeperServiceRegistry>(
+        ZookeeperServiceRegistry,
+      );
 
-      await expect(invalidRegistry.init()).rejects.toThrow('HeartbeatOptions is required');
+      await expect(invalidRegistry.init()).rejects.toThrow(
+        'HeartbeatOptions is required',
+      );
     });
 
     it('should throw error when discovery options are missing', async () => {
@@ -149,9 +154,13 @@ describe('ZookeeperServiceRegistry', () => {
         ],
       }).compile();
 
-      const invalidRegistry = module.get<ZookeeperServiceRegistry>(ZookeeperServiceRegistry);
+      const invalidRegistry = module.get<ZookeeperServiceRegistry>(
+        ZookeeperServiceRegistry,
+      );
 
-      await expect(invalidRegistry.init()).rejects.toThrow('ZookeeperDiscoveryOptions is required');
+      await expect(invalidRegistry.init()).rejects.toThrow(
+        'ZookeeperDiscoveryOptions is required',
+      );
     });
 
     it('should handle namespace already exists error gracefully', async () => {
@@ -186,14 +195,16 @@ describe('ZookeeperServiceRegistry', () => {
     });
 
     it('should register service successfully', async () => {
-      mockZookeeperClient.create.mockResolvedValue('/swft-mt-service/test-service-1');
+      mockZookeeperClient.create.mockResolvedValue(
+        '/swft-mt-service/test-service-1',
+      );
 
       await serviceRegistry.register();
 
       expect(mockZookeeperClient.create).toHaveBeenCalledWith(
         expect.stringContaining('/swft-mt-service/'),
         expect.any(Buffer),
-        ZooKeeper.constants.ZOO_PERSISTENT
+        ZooKeeper.constants.ZOO_PERSISTENT,
       );
     });
 
@@ -210,7 +221,9 @@ describe('ZookeeperServiceRegistry', () => {
     }, 15000); // Add timeout to prevent infinite loop
 
     it('should handle registration failure with failFast disabled', async () => {
-      mockZookeeperClient.create.mockRejectedValue(new Error('Registration failed'));
+      mockZookeeperClient.create.mockRejectedValue(
+        new Error('Registration failed'),
+      );
 
       await expect(serviceRegistry.register()).resolves.not.toThrow();
     }, 15000); // Add timeout to prevent infinite loop
@@ -225,7 +238,10 @@ describe('ZookeeperServiceRegistry', () => {
     });
 
     it('should deregister service successfully', async () => {
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from('test'), { version: 1 }]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from('test'),
+        { version: 1 },
+      ]);
       mockZookeeperClient.delete_.mockResolvedValue();
 
       await serviceRegistry.deregister();
@@ -262,7 +278,10 @@ describe('ZookeeperServiceRegistry', () => {
       await serviceRegistry['watchAll']();
 
       // The service store should be called with the service name and instances
-      expect(mockServiceStore.setServices).toHaveBeenCalledWith('test-service', expect.any(Array));
+      expect(mockServiceStore.setServices).toHaveBeenCalledWith(
+        'test-service',
+        expect.any(Array),
+      );
     });
 
     it('should handle service data parsing errors gracefully', async () => {
@@ -275,7 +294,7 @@ describe('ZookeeperServiceRegistry', () => {
 
       expect(loggerSpy).toHaveBeenCalledWith(
         expect.stringContaining('Failed to parse JSON for service node'),
-        expect.any(Error)
+        expect.any(Error),
       );
     });
 
@@ -292,7 +311,10 @@ describe('ZookeeperServiceRegistry', () => {
 
       await serviceRegistry['watchAll']();
 
-      expect(mockServiceStore.setServices).toHaveBeenCalledWith('test-service', expect.any(Array));
+      expect(mockServiceStore.setServices).toHaveBeenCalledWith(
+        'test-service',
+        expect.any(Array),
+      );
     });
 
     it('should handle namespace not exists error in watch setup', async () => {
@@ -304,7 +326,7 @@ describe('ZookeeperServiceRegistry', () => {
       await serviceRegistry['watchAll']();
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.stringContaining("doesn't exist yet, skipping watch setup")
+        expect.stringContaining("doesn't exist yet, skipping watch setup"),
       );
     });
   });
@@ -317,14 +339,16 @@ describe('ZookeeperServiceRegistry', () => {
       // Simulate connection timeout
       jest.useFakeTimers();
       const initPromise = serviceRegistry.init();
-      
+
       // Fast-forward time to trigger timeout
       jest.advanceTimersByTime(31000);
-      
-      await expect(initPromise).rejects.toThrow('Failed to connect to zookeeper within timeout period');
-      
+
+      await expect(initPromise).rejects.toThrow(
+        'Failed to connect to Zookeeper within timeout period',
+      );
+
       jest.useRealTimers();
-      
+
       // Clean up any remaining timers
       jest.clearAllTimers();
     });
@@ -340,7 +364,7 @@ describe('ZookeeperServiceRegistry', () => {
 
       expect(loggerSpy).toHaveBeenCalledWith(
         expect.stringContaining('Failed to create namespace node'),
-        unexpectedError
+        unexpectedError,
       );
     });
   });
@@ -350,7 +374,9 @@ describe('ZookeeperServiceRegistry', () => {
       mockZookeeperClient.connected = true;
       mockZookeeperClient.create.mockResolvedValue('/swft-mt-service');
       mockZookeeperClient.get_children.mockResolvedValue([]);
-      mockZookeeperClient.create.mockResolvedValue('/swft-mt-service/test-service-1');
+      mockZookeeperClient.create.mockResolvedValue(
+        '/swft-mt-service/test-service-1',
+      );
 
       await serviceRegistry.onModuleInit();
 
@@ -363,7 +389,10 @@ describe('ZookeeperServiceRegistry', () => {
       mockZookeeperClient.get_children.mockResolvedValue([]);
       await serviceRegistry.init();
 
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from('test'), { version: 1 }]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from('test'),
+        { version: 1 },
+      ]);
       mockZookeeperClient.delete_.mockResolvedValue();
 
       await serviceRegistry.onModuleDestroy();
@@ -371,4 +400,4 @@ describe('ZookeeperServiceRegistry', () => {
       expect(mockZookeeperClient.delete_).toHaveBeenCalled();
     });
   });
-}); 
+});

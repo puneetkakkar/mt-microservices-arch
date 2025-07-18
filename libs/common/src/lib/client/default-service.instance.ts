@@ -59,6 +59,10 @@ export class DefaultServiceInstance implements ServiceInstance {
   }
 
   getMetadata(): PlainObject {
-    return this.opts.metadata || new Map();
+    if (this.opts.metadata instanceof Map) {
+      return Object.fromEntries(this.opts.metadata);
+    }
+    
+    return this.opts.metadata || {};
   }
 }

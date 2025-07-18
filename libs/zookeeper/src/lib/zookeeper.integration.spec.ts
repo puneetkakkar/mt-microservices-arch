@@ -1,18 +1,18 @@
 /**
  * Integration tests for Zookeeper module
- * 
+ *
  * These tests are designed to work with mocked zookeeper functionality
  * to avoid requiring a real zookeeper instance during testing.
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ZookeeperModule } from './zookeeper.module';
-import { ZookeeperClient } from './zookeeper.client';
-import { ZookeeperServiceRegistry } from './service-registry/zookeeper-service-registry';
-import { ZookeeperDiscoveryClient } from './discovery/zookeeper-discovery.client';
-import { ZookeeperModuleOptions } from './zookeeper-module.options';
 import { ServiceStore } from '@swft-mt/common';
+import { ZookeeperDiscoveryClient } from './discovery/zookeeper-discovery.client';
+import { ZookeeperServiceRegistry } from './service-registry/zookeeper-service-registry';
+import { ZookeeperModuleOptions } from './zookeeper-module.options';
+import { ZookeeperClient } from './zookeeper.client';
 import { ZookeeperConfig } from './zookeeper.config';
+import { ZookeeperModule } from './zookeeper.module';
 
 // Mock the zookeeper client
 jest.mock('./zookeeper.client');
@@ -63,7 +63,9 @@ describe('Zookeeper Integration Tests', () => {
       connect: jest.fn().mockResolvedValue(undefined),
       close: jest.fn(),
       create: jest.fn().mockResolvedValue('/swft-mt-service/test-service-1'),
-      get: jest.fn().mockResolvedValue([Buffer.from(JSON.stringify(testService))]),
+      get: jest
+        .fn()
+        .mockResolvedValue([Buffer.from(JSON.stringify(testService))]),
       delete_: jest.fn().mockResolvedValue(undefined),
       get_children: jest.fn().mockResolvedValue(['test-service-1']),
       once: jest.fn(),
@@ -90,7 +92,7 @@ describe('Zookeeper Integration Tests', () => {
               getServices: jest.fn().mockReturnValue([]),
               removeServices: jest.fn(),
             } as any;
-            
+
             const registry = new ZookeeperServiceRegistry(
               mockZookeeperClient,
               {
@@ -98,7 +100,7 @@ describe('Zookeeper Integration Tests', () => {
                 discovery: testDiscoveryOptions,
                 heartbeat: testHeartbeatOptions,
               },
-              mockServiceStore
+              mockServiceStore,
             );
             return registry;
           },
@@ -109,13 +111,19 @@ describe('Zookeeper Integration Tests', () => {
         },
       ],
     })
-    .overrideProvider(ZookeeperClient)
-    .useValue(mockZookeeperClient)
-    .compile();
+      .overrideProvider(ZookeeperClient)
+      .useValue(mockZookeeperClient)
+      .compile();
 
-    zookeeperClient = module.get<ZookeeperClient>(ZookeeperClient) as jest.Mocked<ZookeeperClient>;
-    serviceRegistry = module.get<ZookeeperServiceRegistry>(ZookeeperServiceRegistry);
-    discoveryClient = module.get<ZookeeperDiscoveryClient>(ZookeeperDiscoveryClient);
+    zookeeperClient = module.get<ZookeeperClient>(
+      ZookeeperClient,
+    ) as jest.Mocked<ZookeeperClient>;
+    serviceRegistry = module.get<ZookeeperServiceRegistry>(
+      ZookeeperServiceRegistry,
+    );
+    discoveryClient = module.get<ZookeeperDiscoveryClient>(
+      ZookeeperDiscoveryClient,
+    );
     serviceStore = module.get<ServiceStore>(ServiceStore);
 
     // Manually initialize the config
@@ -143,7 +151,7 @@ describe('Zookeeper Integration Tests', () => {
     it('should connect to Zookeeper successfully', async () => {
       zookeeperClient.connected = true;
       await zookeeperClient.connect();
-      
+
       expect(zookeeperClient.connected).toBe(true);
       expect(zookeeperClient.connect).toHaveBeenCalled();
     }, 5000);
@@ -177,7 +185,10 @@ describe('Zookeeper Integration Tests', () => {
 
       const services = await discoveryClient.getServices();
       expect(services).toEqual(['test-service-1']);
-      expect(zookeeperClient.get_children).toHaveBeenCalledWith('/swft-mt-service', false);
+      expect(zookeeperClient.get_children).toHaveBeenCalledWith(
+        '/swft-mt-service',
+        false,
+      );
     }, 5000);
 
     it('should get service instances', async () => {
@@ -191,7 +202,9 @@ describe('Zookeeper Integration Tests', () => {
         }
         return Promise.resolve([]);
       });
-      zookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify(testService))]);
+      zookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify(testService)),
+      ]);
 
       const instances = await discoveryClient.getInstances(testService.name);
       expect(instances).toHaveLength(1);
@@ -219,10 +232,12 @@ describe('Zookeeper Integration Tests', () => {
           discovery: testDiscoveryOptions,
           heartbeat: testHeartbeatOptions,
         },
-        mockServiceStore
+        mockServiceStore,
       );
-      
-      await expect(invalidRegistry.init()).rejects.toThrow('Service name is required');
+
+      await expect(invalidRegistry.init()).rejects.toThrow(
+        'Service name is required',
+      );
     }, 5000);
   });
 
@@ -235,7 +250,10 @@ describe('Zookeeper Integration Tests', () => {
       };
 
       // Mock multiple services
-      zookeeperClient.get_children.mockResolvedValue(['test-service-1', 'test-service-2']);
+      zookeeperClient.get_children.mockResolvedValue([
+        'test-service-1',
+        'test-service-2',
+      ]);
       zookeeperClient.get
         .mockResolvedValueOnce([Buffer.from(JSON.stringify(testService))])
         .mockResolvedValueOnce([Buffer.from(JSON.stringify(testService2))]);
@@ -249,4 +267,4 @@ describe('Zookeeper Integration Tests', () => {
       expect(services).toContain('test-service-2');
     }, 3000);
   });
-}); 
+});

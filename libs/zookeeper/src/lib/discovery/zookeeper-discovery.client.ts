@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { DiscoveryClient, PlainObject, ServiceInstance } from '@swft-mt/common';
-import _ from 'lodash';
+import { flatten } from 'lodash';
 import { ZookeeperClient } from '../zookeeper.client';
 import { ZookeeperServiceInstance } from './zookeeper-service.instance';
 
@@ -29,18 +29,18 @@ export class ZookeeperDiscoveryClient implements DiscoveryClient {
       // Get all service instances for the given service ID
       const servicePath = `${this.namespace}/${serviceId}`;
       const instances = await this.client.get_children(servicePath, false);
-      
+
       if (!Array.isArray(instances) || instances.length === 0) {
         return [];
       }
 
       const serviceInstances: ServiceInstance[] = [];
-      
+
       for (const instanceId of instances) {
         try {
           const instancePath = `${servicePath}/${instanceId}`;
           const [data] = await this.client.get(instancePath, false);
-          
+
           if (data) {
             const serviceData = JSON.parse(data.toString());
             const metadata = this.getMetadata(serviceData.tags || []);
@@ -49,23 +49,29 @@ export class ZookeeperDiscoveryClient implements DiscoveryClient {
               secure = /true/i.test(metadata['secure'] || '');
             }
 
-            serviceInstances.push(new ZookeeperServiceInstance({
-              instanceId: serviceData.id || instanceId,
-              serviceId,
-              host: serviceData.address || 'localhost',
-              port: serviceData.port || 3000,
-              secure,
-              metadata,
-            }));
+            serviceInstances.push(
+              new ZookeeperServiceInstance({
+                instanceId: serviceData.id || instanceId,
+                serviceId,
+                host: serviceData.address || 'localhost',
+                port: serviceData.port || 3000,
+                secure,
+                metadata,
+              }),
+            );
           }
         } catch (error) {
-          this.logger.warn(`Failed to fetch service instance ${instanceId}: ${error}`);
+          this.logger.warn(
+            `Failed to fetch service instance ${instanceId}: ${error}`,
+          );
         }
       }
 
       return serviceInstances;
     } catch (error) {
-      this.logger.error(`Failed to get instances for service ${serviceId}: ${error}`);
+      this.logger.error(
+        `Failed to get instances for service ${serviceId}: ${error}`,
+      );
       return [];
     }
   }
@@ -93,7 +99,7 @@ export class ZookeeperDiscoveryClient implements DiscoveryClient {
       services.map((serviceId) => this.addInstancesToList(serviceId)),
     );
 
-    return _.flatten(allServices);
+    return flatten(allServices);
   }
 
   async getServices(): Promise<string[]> {

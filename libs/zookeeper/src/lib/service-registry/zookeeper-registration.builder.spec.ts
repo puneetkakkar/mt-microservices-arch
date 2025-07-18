@@ -1,6 +1,6 @@
-import { ZookeeperRegistrationBuilder } from './zookeeper-registration.builder';
-import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
 import { HeartbeatOptions } from '@swft-mt/common';
+import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
+import { ZookeeperRegistrationBuilder } from './zookeeper-registration.builder';
 
 describe('ZookeeperRegistrationBuilder', () => {
   let builder: ZookeeperRegistrationBuilder;
@@ -161,7 +161,9 @@ describe('ZookeeperRegistrationBuilder', () => {
         .discoveryOptions(mockDiscoveryOptions)
         .build();
 
-      expect(registration1.getInstanceId()).not.toBe(registration2.getInstanceId());
+      expect(registration1.getInstanceId()).not.toBe(
+        registration2.getInstanceId(),
+      );
       expect(registration1.getInstanceId()).toContain('test-service');
       // When version is undefined, it becomes part of the instance ID
       expect(registration1.getInstanceId()).toContain('undefined');
@@ -348,4 +350,4 @@ describe('ZookeeperRegistrationBuilder', () => {
       expect(registration.getService().port).toBe(3000);
     });
   });
-}); 
+});
