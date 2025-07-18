@@ -34,13 +34,16 @@ export class ServiceStore extends EventEmitter implements IServiceStore {
 
   addService(name: string, service: ServiceInstance, noEmit?: boolean) {
     if (this.services.has(name)) {
-      const idx = this.services
-        .get(name)
-        .findIndex((elem) => elem.getServiceId() === service.getServiceId());
-      if (idx !== -1) {
-        this.services.get(name)[idx] = service;
+      const serviceList = this.services.get(name);
+      if (!serviceList) {
+        this.services.set(name, [service]);
       } else {
-        this.services.get(name).push(service);
+        const idx = serviceList.findIndex((elem) => elem.getServiceId() === service.getServiceId());
+        if (idx !== -1) {
+          serviceList[idx] = service;
+        } else {
+          serviceList.push(service);
+        }
       }
     } else {
       this.services.set(name, [service]);
@@ -79,10 +82,14 @@ export class ServiceStore extends EventEmitter implements IServiceStore {
     try {
       if (this.services.has(serviceName)) {
         const serviceList = this.services.get(serviceName);
-        if ((serviceList?.length ?? 0) === 1) {
+        if (!serviceList) {
+          return;
+        }
+        
+        if (serviceList.length === 1) {
           this.emit(this.eventName, 'removed', serviceName, serviceList);
           this.services.delete(serviceName);
-        } else if (serviceList) {
+        } else {
           const idx = serviceList.findIndex(
             (elem) => elem.getInstanceId() === nodeId,
           );

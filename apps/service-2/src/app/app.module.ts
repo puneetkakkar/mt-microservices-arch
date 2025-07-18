@@ -1,23 +1,28 @@
 import { Module } from '@nestjs/common';
 import { ClientModule } from '@swft-mt/client';
 import { CloudModule } from '@swft-mt/cloud';
-import { ConsulModule } from '@swft-mt/consul';
 import { LoadBalancerModule } from '@swft-mt/loadbalancer';
+import { ZookeeperModule } from '@swft-mt/zookeeper';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
   imports: [
-    ConsulModule.forRoot({
-      host: 'localhost',
-      port: '8500',
-      promisify: true,
-      secure: false,
+    // ConsulModule.forRoot({
+    //   host: 'localhost',
+    //   port: '8500',
+    //   promisify: true,
+    //   secure: false,
+    // }),
+    ZookeeperModule.forRoot({
+      host: 'localhost:2181',
+      retryAttempts: 6000,
     }),
     CloudModule.forRoot({
       registry: {
-        discoverer: 'consul',
+        discoverer: 'zookeeper',
         service: {
+          id: `service-2-${process.env.PORT || 3334}`,
           name: 'service-2',
           address: 'localhost',
           port: parseInt(process.env.PORT) || 3334,

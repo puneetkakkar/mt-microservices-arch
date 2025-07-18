@@ -37,11 +37,11 @@ export class DefaultServiceInstance implements ServiceInstance {
   }
 
   getStatus(): string {
-    return this.opts.status;
+    return this.opts.status || 'unknown';
   }
 
   getNodeID(): string {
-    return this.opts.nodeID;
+    return this.opts.nodeID || this.opts.instanceId;
   }
 
   isSecure(): boolean {

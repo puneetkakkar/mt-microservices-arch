@@ -8,12 +8,11 @@ export class ZookeeperHeartbeatTask implements HeartbeatTask {
 
   constructor(
     private client: ZookeeperClient,
-    serviceId: string,
+    serviceId: string | null | undefined,
   ) {
-    this.checkId = serviceId;
-    if (!this.checkId.startsWith('service:')) {
-      this.checkId = `service:${this.checkId}`;
-    }
+    // Handle null/undefined values properly
+    const id = serviceId || 'unknown';
+    this.checkId = id.startsWith('service:') ? id : `service:${id}`;
   }
 
   run() {

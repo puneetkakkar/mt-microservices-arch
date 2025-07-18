@@ -25,24 +25,49 @@ export class ZookeeperDiscoveryClient implements DiscoveryClient {
   private async addInstancesToList(
     serviceId: string,
   ): Promise<ServiceInstance[]> {
-    const healthServices: any[] = [];
-    return healthServices.map((healthService) => {
-      const host = this.findHost(healthService);
-      const metadata = this.getMetadata(healthService.Service.Tags || []);
-      let secure = false;
-      if (metadata?.['secure']) {
-        secure = /true/i.test(metadata['secure'] || '');
+    try {
+      // Get all service instances for the given service ID
+      const servicePath = `${this.namespace}/${serviceId}`;
+      const instances = await this.client.get_children(servicePath, false);
+      
+      if (!Array.isArray(instances) || instances.length === 0) {
+        return [];
       }
 
-      return new ZookeeperServiceInstance({
-        instanceId: healthService.Service.ID,
-        serviceId,
-        host,
-        port: healthService.Service.Port,
-        secure,
-        metadata,
-      });
-    });
+      const serviceInstances: ServiceInstance[] = [];
+      
+      for (const instanceId of instances) {
+        try {
+          const instancePath = `${servicePath}/${instanceId}`;
+          const [data] = await this.client.get(instancePath, false);
+          
+          if (data) {
+            const serviceData = JSON.parse(data.toString());
+            const metadata = this.getMetadata(serviceData.tags || []);
+            let secure = false;
+            if (metadata?.['secure']) {
+              secure = /true/i.test(metadata['secure'] || '');
+            }
+
+            serviceInstances.push(new ZookeeperServiceInstance({
+              instanceId: serviceData.id || instanceId,
+              serviceId,
+              host: serviceData.address || 'localhost',
+              port: serviceData.port || 3000,
+              secure,
+              metadata,
+            }));
+          }
+        } catch (error) {
+          this.logger.warn(`Failed to fetch service instance ${instanceId}: ${error}`);
+        }
+      }
+
+      return serviceInstances;
+    } catch (error) {
+      this.logger.error(`Failed to get instances for service ${serviceId}: ${error}`);
+      return [];
+    }
   }
 
   private findHost(healthService: any): string {
@@ -73,6 +98,10 @@ export class ZookeeperDiscoveryClient implements DiscoveryClient {
 
   async getServices(): Promise<string[]> {
     const services = await this.client.get_children(this.namespace, false);
+    // Handle both array and object responses from zookeeper
+    if (Array.isArray(services)) {
+      return services;
+    }
     return Object.keys(services);
   }
 }
