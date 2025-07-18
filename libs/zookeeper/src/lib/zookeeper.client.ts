@@ -36,7 +36,11 @@ export class ZookeeperClient
   }
 
   // Expose ZooKeeper methods
-  override async create(path: string, data: Buffer, flags: number): Promise<string> {
+  override async create(
+    path: string,
+    data: Buffer,
+    flags: number,
+  ): Promise<string> {
     return super.create(path, data, flags);
   }
 

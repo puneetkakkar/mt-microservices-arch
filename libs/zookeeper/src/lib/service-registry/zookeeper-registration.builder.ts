@@ -1,8 +1,8 @@
 import {
-    HeartbeatOptions,
-    PlainObject,
-    RegistrationBuilder,
-    Service,
+  HeartbeatOptions,
+  PlainObject,
+  RegistrationBuilder,
+  Service,
 } from '@swft-mt/common';
 import * as uuid from 'uuid';
 import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';

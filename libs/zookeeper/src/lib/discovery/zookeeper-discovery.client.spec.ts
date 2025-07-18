@@ -1,6 +1,5 @@
-import { ZookeeperDiscoveryClient } from './zookeeper-discovery.client';
 import { ZookeeperClient } from '../zookeeper.client';
-import { ServiceInstance } from '@swft-mt/common';
+import { ZookeeperDiscoveryClient } from './zookeeper-discovery.client';
 
 // Mock the Zookeeper client
 jest.mock('../zookeeper.client');
@@ -48,20 +47,30 @@ describe('ZookeeperDiscoveryClient', () => {
     };
 
     beforeEach(() => {
-      mockZookeeperClient.get_children.mockResolvedValue(['service-1', 'service-2']);
+      mockZookeeperClient.get_children.mockResolvedValue([
+        'service-1',
+        'service-2',
+      ]);
     });
 
     it('should get all services successfully', async () => {
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify(mockServiceData))]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify(mockServiceData)),
+      ]);
 
       const services = await discoveryClient.getServices();
 
       expect(services).toEqual(['service-1', 'service-2']);
-      expect(mockZookeeperClient.get_children).toHaveBeenCalledWith('/swft-mt-service', false);
+      expect(mockZookeeperClient.get_children).toHaveBeenCalledWith(
+        '/swft-mt-service',
+        false,
+      );
     });
 
     it('should get instances for a specific service', async () => {
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify(mockServiceData))]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify(mockServiceData)),
+      ]);
 
       const instances = await discoveryClient.getInstances('test-service');
 
@@ -228,9 +237,13 @@ describe('ZookeeperDiscoveryClient', () => {
 
   describe('error handling', () => {
     it('should handle zookeeper connection errors gracefully', async () => {
-      mockZookeeperClient.get_children.mockRejectedValue(new Error('Connection failed'));
+      mockZookeeperClient.get_children.mockRejectedValue(
+        new Error('Connection failed'),
+      );
 
-      await expect(discoveryClient.getServices()).rejects.toThrow('Connection failed');
+      await expect(discoveryClient.getServices()).rejects.toThrow(
+        'Connection failed',
+      );
     });
 
     it('should handle individual service fetch errors gracefully', async () => {
@@ -243,9 +256,14 @@ describe('ZookeeperDiscoveryClient', () => {
     });
 
     it('should handle partial service fetch failures', async () => {
-      mockZookeeperClient.get_children.mockResolvedValue(['service-1', 'service-2']);
+      mockZookeeperClient.get_children.mockResolvedValue([
+        'service-1',
+        'service-2',
+      ]);
       mockZookeeperClient.get
-        .mockResolvedValueOnce([Buffer.from(JSON.stringify({ id: 'service-1', name: 'test' }))])
+        .mockResolvedValueOnce([
+          Buffer.from(JSON.stringify({ id: 'service-1', name: 'test' })),
+        ])
         .mockRejectedValueOnce(new Error('Service 2 not found'));
 
       const allInstances = await discoveryClient.getAllInstances();
@@ -263,7 +281,9 @@ describe('ZookeeperDiscoveryClient', () => {
       };
 
       mockZookeeperClient.get_children.mockResolvedValue(['service-1']);
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify(incompleteServiceData))]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify(incompleteServiceData)),
+      ]);
 
       const instances = await discoveryClient.getInstances('test-service');
 
@@ -279,7 +299,9 @@ describe('ZookeeperDiscoveryClient', () => {
       };
 
       mockZookeeperClient.get_children.mockResolvedValue(['service-1']);
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify(nullServiceData))]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify(nullServiceData)),
+      ]);
 
       const instances = await discoveryClient.getInstances('test-service');
 
@@ -287,9 +309,14 @@ describe('ZookeeperDiscoveryClient', () => {
     });
 
     it('should handle very large service lists', async () => {
-      const largeServiceList = Array.from({ length: 100 }, (_, i) => `service-${i}`);
+      const largeServiceList = Array.from(
+        { length: 100 },
+        (_, i) => `service-${i}`,
+      );
       mockZookeeperClient.get_children.mockResolvedValue(largeServiceList);
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify({ id: 'test', name: 'test' }))]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify({ id: 'test', name: 'test' })),
+      ]);
 
       const services = await discoveryClient.getServices();
 
@@ -299,8 +326,13 @@ describe('ZookeeperDiscoveryClient', () => {
 
   describe('performance', () => {
     it('should handle concurrent service requests efficiently', async () => {
-      mockZookeeperClient.get_children.mockResolvedValue(['service-1', 'service-2']);
-      mockZookeeperClient.get.mockResolvedValue([Buffer.from(JSON.stringify({ id: 'test', name: 'test' }))]);
+      mockZookeeperClient.get_children.mockResolvedValue([
+        'service-1',
+        'service-2',
+      ]);
+      mockZookeeperClient.get.mockResolvedValue([
+        Buffer.from(JSON.stringify({ id: 'test', name: 'test' })),
+      ]);
 
       const startTime = Date.now();
       const promises = [
@@ -316,4 +348,4 @@ describe('ZookeeperDiscoveryClient', () => {
       expect(endTime - startTime).toBeLessThan(1000);
     });
   });
-}); 
+});

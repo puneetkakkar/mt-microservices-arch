@@ -9,7 +9,6 @@
  * Make sure to stop the container after testing (Ctrl+C if running in foreground).
  */
 
-import { ZooKeeper } from '@swft-mt/zookeeper';
 import { ZookeeperModuleOptions } from './zookeeper-module.options';
 import { ZookeeperClient } from './zookeeper.client';
 import { ZookeeperConfig } from './zookeeper.config';

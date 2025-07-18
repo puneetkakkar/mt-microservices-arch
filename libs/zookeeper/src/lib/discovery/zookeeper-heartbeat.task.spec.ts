@@ -1,5 +1,5 @@
-import { ZookeeperHeartbeatTask } from './zookeeper-heartbeat.task';
 import { ZookeeperClient } from '../zookeeper.client';
+import { ZookeeperHeartbeatTask } from './zookeeper-heartbeat.task';
 
 // Mock the Zookeeper client
 jest.mock('../zookeeper.client');
@@ -16,7 +16,10 @@ describe('ZookeeperHeartbeatTask', () => {
       close: jest.fn(),
     } as any;
 
-    heartbeatTask = new ZookeeperHeartbeatTask(mockZookeeperClient, 'test-service-1');
+    heartbeatTask = new ZookeeperHeartbeatTask(
+      mockZookeeperClient,
+      'test-service-1',
+    );
   });
 
   afterEach(() => {
@@ -31,12 +34,18 @@ describe('ZookeeperHeartbeatTask', () => {
     });
 
     it('should create heartbeat task with different service ID', () => {
-      const task2 = new ZookeeperHeartbeatTask(mockZookeeperClient, 'test-service-2');
+      const task2 = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        'test-service-2',
+      );
       expect(task2['checkId']).toBe('service:test-service-2');
     });
 
     it('should not add service: prefix if already present', () => {
-      const taskWithPrefix = new ZookeeperHeartbeatTask(mockZookeeperClient, 'service:test-service-3');
+      const taskWithPrefix = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        'service:test-service-3',
+      );
       expect(taskWithPrefix['checkId']).toBe('service:test-service-3');
     });
   });
@@ -47,12 +56,14 @@ describe('ZookeeperHeartbeatTask', () => {
 
       heartbeatTask.run();
 
-      expect(loggerSpy).toHaveBeenCalledWith('Sending zookeeper heartbeat for: service:test-service-1');
+      expect(loggerSpy).toHaveBeenCalledWith(
+        'Sending zookeeper heartbeat for: service:test-service-1',
+      );
     });
 
     it('should handle errors gracefully during run', () => {
       const loggerSpy = jest.spyOn(heartbeatTask.logger, 'error');
-      
+
       // Mock the logger.log to throw an error
       jest.spyOn(heartbeatTask.logger, 'log').mockImplementation(() => {
         throw new Error('Logger error');
@@ -75,27 +86,36 @@ describe('ZookeeperHeartbeatTask', () => {
       heartbeatTask.run();
 
       expect(loggerSpy).toHaveBeenCalledWith(
-        expect.stringContaining('Sending zookeeper heartbeat for:')
+        expect.stringContaining('Sending zookeeper heartbeat for:'),
       );
     });
   });
 
   describe('service ID processing', () => {
     it('should handle empty service ID', () => {
-      const taskWithEmptyId = new ZookeeperHeartbeatTask(mockZookeeperClient, '');
+      const taskWithEmptyId = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        '',
+      );
       // Empty string is falsy, so it becomes 'unknown'
       expect(taskWithEmptyId['checkId']).toBe('service:unknown');
     });
 
     it('should handle service ID with special characters', () => {
       const specialId = 'test-service-with-special-chars-@#$%^&*()';
-      const taskWithSpecialId = new ZookeeperHeartbeatTask(mockZookeeperClient, specialId);
+      const taskWithSpecialId = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        specialId,
+      );
       expect(taskWithSpecialId['checkId']).toBe(`service:${specialId}`);
     });
 
     it('should handle very long service ID', () => {
       const longId = 'a'.repeat(1000);
-      const taskWithLongId = new ZookeeperHeartbeatTask(mockZookeeperClient, longId);
+      const taskWithLongId = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        longId,
+      );
       expect(taskWithLongId['checkId']).toBe(`service:${longId}`);
     });
   });
@@ -103,7 +123,7 @@ describe('ZookeeperHeartbeatTask', () => {
   describe('error handling', () => {
     it('should catch and log exceptions during run', () => {
       const loggerSpy = jest.spyOn(heartbeatTask.logger, 'error');
-      
+
       // Mock the logger.log to throw an error
       jest.spyOn(heartbeatTask.logger, 'log').mockImplementation(() => {
         throw new Error('Test error');
@@ -115,13 +135,19 @@ describe('ZookeeperHeartbeatTask', () => {
     });
 
     it('should handle null service ID', () => {
-      const taskWithNullId = new ZookeeperHeartbeatTask(mockZookeeperClient, null as any);
+      const taskWithNullId = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        null as any,
+      );
       // Null is falsy, so it becomes 'unknown'
       expect(taskWithNullId['checkId']).toBe('service:unknown');
     });
 
     it('should handle undefined service ID', () => {
-      const taskWithUndefinedId = new ZookeeperHeartbeatTask(mockZookeeperClient, undefined as any);
+      const taskWithUndefinedId = new ZookeeperHeartbeatTask(
+        mockZookeeperClient,
+        undefined as any,
+      );
       // Undefined is falsy, so it becomes 'unknown'
       expect(taskWithUndefinedId['checkId']).toBe('service:unknown');
     });
@@ -155,4 +181,4 @@ describe('ZookeeperHeartbeatTask', () => {
       });
     });
   });
-}); 
+});

@@ -50,7 +50,10 @@ export class ZookeeperServiceRegistry
         throw Error('ZookeeperDiscoveryOptions is required.');
       }
 
-      if (!this.options.service?.name || this.options.service.name.trim() === '') {
+      if (
+        !this.options.service?.name ||
+        this.options.service.name.trim() === ''
+      ) {
         throw Error('Service name is required');
       }
 
@@ -80,13 +83,15 @@ export class ZookeeperServiceRegistry
       let attempts = 0;
       const maxAttempts = 30; // 30 seconds
       while (!this.client.connected && attempts < maxAttempts) {
-        this.logger.log(`Waiting for zookeeper connection... (attempt ${attempts + 1}/${maxAttempts})`);
+        this.logger.log(
+          `Waiting for Zookeeper connection... (attempt ${attempts + 1}/${maxAttempts})`,
+        );
         await sleep(1000);
         attempts++;
       }
 
       if (!this.client.connected) {
-        throw new Error('Failed to connect to zookeeper within timeout period');
+        throw new Error('Failed to connect to Zookeeper within timeout period');
       }
 
       this.logger.log('Zookeeper connected, proceeding with registration');
@@ -97,12 +102,13 @@ export class ZookeeperServiceRegistry
     } catch (e) {
       this.logger.error('Error in init method:', e);
       // Re-throw validation errors but handle other errors gracefully
-      if (e instanceof Error && (
-        e.message === 'HeartbeatOptions is required' || 
-        e.message === 'ZookeeperDiscoveryOptions is required.' ||
-        e.message === 'Service name is required' ||
-        e.message === 'Failed to connect to zookeeper within timeout period'
-      )) {
+      if (
+        e instanceof Error &&
+        (e.message === 'HeartbeatOptions is required' ||
+          e.message === 'ZookeeperDiscoveryOptions is required.' ||
+          e.message === 'Service name is required' ||
+          e.message === 'Failed to connect to Zookeeper within timeout period')
+      ) {
         throw e;
       }
       // Don't throw other errors, just log them and continue
@@ -155,12 +161,12 @@ export class ZookeeperServiceRegistry
       const service = this.generateService();
       let attempts = 0;
       const maxAttempts = 5; // Limit retry attempts to prevent infinite loops
-      
+
       while (attempts < maxAttempts) {
         try {
           // Wait for zookeeper connection
           if (!this.client.connected) {
-            this.logger.warn('Waiting for zookeeper connection...');
+            this.logger.warn('Waiting for Zookeeper connection...');
             await sleep(1000);
             attempts++;
             continue;
@@ -178,13 +184,18 @@ export class ZookeeperServiceRegistry
           break;
         } catch (e) {
           attempts++;
-          this.logger.error(`problem registering service, retrying... (attempt ${attempts}/${maxAttempts})`, e);
-          
+          this.logger.error(
+            `problem registering service, retrying... (attempt ${attempts}/${maxAttempts})`,
+            e,
+          );
+
           if (attempts >= maxAttempts) {
-            this.logger.error(`Failed to register service after ${maxAttempts} attempts`);
+            this.logger.error(
+              `Failed to register service after ${maxAttempts} attempts`,
+            );
             throw e;
           }
-          
+
           await sleep(3000);
         }
       }
@@ -201,7 +212,7 @@ export class ZookeeperServiceRegistry
         throw e;
       }
       this.logger.warn(
-        `Fail fast is false. Error registering service with zookeeper: ${this.registration.getService()} ${e}`,
+        `Fail fast is false. Error registering service with Zookeeper: ${this.registration.getService()} ${e}`,
       );
     }
   }
@@ -211,7 +222,7 @@ export class ZookeeperServiceRegistry
       throw new Error('Service registration is not initialized.');
     }
     this.logger.log(
-      `Deregistering service with zookeeper: ${this.registration.getInstanceId()}`,
+      `Deregistering service with Zookeeper: ${this.registration.getInstanceId()}`,
     );
 
     try {
@@ -222,7 +233,7 @@ export class ZookeeperServiceRegistry
       const [stats] = (await this.client.get(key, false)) as unknown as any[];
       await this.client.delete_(key, stats.version);
       this.logger.log(
-        `Deregistered service with zookeeper: ${this.registration.getInstanceId()}`,
+        `Deregistered service with Zookeeper: ${this.registration.getInstanceId()}`,
       );
     } catch (e) {
       this.logger.error(e);
@@ -247,21 +258,26 @@ export class ZookeeperServiceRegistry
     } catch (e: any) {
       // Log the full error for debugging
       this.logger.debug(`Error creating namespace node: ${JSON.stringify(e)}`);
-      
+
       // Check for both string messages and numeric error codes
       const isNodeExistsError =
-        (e.message && (e.message.includes('node already exists') || e.message.includes('ZNODEEXISTS')))
-        || (e.code === -110)
-        || (typeof e.getCode === 'function' && e.getCode() === -110)
-        || (e.message && e.message.includes('-110 node exists'))
-        || (e.message && e.message.includes('-110'))
-        || (e.toString && e.toString().includes('-110'));
-      
+        (e.message &&
+          (e.message.includes('node already exists') ||
+            e.message.includes('ZNODEEXISTS'))) ||
+        e.code === -110 ||
+        (typeof e.getCode === 'function' && e.getCode() === -110) ||
+        (e.message && e.message.includes('-110 node exists')) ||
+        (e.message && e.message.includes('-110')) ||
+        (e.toString && e.toString().includes('-110'));
+
       if (isNodeExistsError) {
         this.logger.warn(`Namespace node ${this.namespace} already exists`);
         return; // Don't throw, just return
       } else {
-        this.logger.error(`Failed to create namespace node: ${e.message || e}`, e);
+        this.logger.error(
+          `Failed to create namespace node: ${e.message || e}`,
+          e,
+        );
         // Don't throw the error, just log it and continue
         // This prevents the application from crashing
       }
@@ -276,7 +292,9 @@ export class ZookeeperServiceRegistry
       // Bind the callback to preserve the 'this' context
       await this.setWatch(this.storeUpdate.bind(this));
     } catch (e) {
-      this.logger.warn(`Failed to set up watching, continuing without watch: ${e}`);
+      this.logger.warn(
+        `Failed to set up watching, continuing without watch: ${e}`,
+      );
     }
   }
 
@@ -287,30 +305,32 @@ export class ZookeeperServiceRegistry
   ) {
     try {
       const serviceMap: Map<string, any[]> = new Map();
-      
+
       // Ensure children is an array and iterable
       if (!Array.isArray(children)) {
-        logger.warn('Children is not an array, skipping service discovery update');
+        logger.warn(
+          'Children is not an array, skipping service discovery update',
+        );
         return;
       }
-      
+
       for (const child of children) {
         try {
           const key = [this.namespace, child].join('/');
           const result = await this.client.get(key, false);
-          
+
           // The get method returns [data, stats], so we need to extract the data
           if (!Array.isArray(result) || result.length === 0) {
             logger.warn(`No data returned for service node ${child}`);
             continue;
           }
-          
+
           const data = result[0];
           if (typeof data === 'undefined' || data === null) {
             logger.warn(`Null or undefined data for service node ${child}`);
             continue;
           }
-          
+
           // Handle different data types properly
           let strData: string;
           if (Buffer.isBuffer(data)) {
@@ -322,34 +342,43 @@ export class ZookeeperServiceRegistry
             try {
               strData = JSON.stringify(data);
             } catch (stringifyError) {
-              logger.warn(`Failed to stringify object data for service node ${child}: ${stringifyError}`);
+              logger.warn(
+                `Failed to stringify object data for service node ${child}: ${stringifyError}`,
+              );
               continue;
             }
           } else {
-            logger.warn(`Unexpected data type for service node ${child}: ${typeof data}, value: ${data}`);
+            logger.warn(
+              `Unexpected data type for service node ${child}: ${typeof data}, value: ${data}`,
+            );
             continue;
           }
-          
+
           if (!strData || strData.trim() === '') {
             logger.warn(`Empty data for service node ${child}`);
             continue;
           }
-          
+
           // Try to parse the JSON data
           let service: any;
           try {
             service = JSON.parse(strData);
           } catch (parseError) {
-            logger.error(`Failed to parse JSON for service node ${child}. Data: "${strData}"`, parseError);
+            logger.error(
+              `Failed to parse JSON for service node ${child}. Data: "${strData}"`,
+              parseError,
+            );
             continue;
           }
-          
+
           // Validate that we have a service object with a name
           if (!service || typeof service !== 'object' || !service.name) {
-            logger.warn(`Invalid service data for node ${child}: missing name property`);
+            logger.warn(
+              `Invalid service data for node ${child}: missing name property`,
+            );
             continue;
           }
-          
+
           // Group by service name
           if (!serviceMap.has(service.name)) {
             serviceMap.set(service.name, []);
@@ -359,7 +388,7 @@ export class ZookeeperServiceRegistry
           logger.error(`Failed to fetch or parse service node ${child}:`, e);
         }
       }
-      
+
       // Convert to ZookeeperServiceInstance and update store
       for (const [name, services] of serviceMap.entries()) {
         const instances = services.map(
@@ -385,20 +414,23 @@ export class ZookeeperServiceRegistry
     try {
       // For now, just get children without watching to avoid the async callback issue
       const children = await this.client.get_children(this.namespace, false);
-      
+
       // Call the callback directly without trying to get individual nodes
       // The callback will handle getting the individual nodes with proper paths
       callback(children, this.serviceStore, this.logger);
     } catch (e: any) {
       // Check if the error is because the namespace doesn't exist yet
       const isNamespaceNotExistsError =
-        (e.message && (e.message.includes('no node') || e.message.includes('NONODE')))
-        || (e.code === -101)
-        || (typeof e.getCode === 'function' && e.getCode() === -101)
-        || (e.message && e.message.includes('-101'));
-      
+        (e.message &&
+          (e.message.includes('no node') || e.message.includes('NONODE'))) ||
+        e.code === -101 ||
+        (typeof e.getCode === 'function' && e.getCode() === -101) ||
+        (e.message && e.message.includes('-101'));
+
       if (isNamespaceNotExistsError) {
-        this.logger.warn(`Namespace ${this.namespace} doesn't exist yet, skipping watch setup`);
+        this.logger.warn(
+          `Namespace ${this.namespace} doesn't exist yet, skipping watch setup`,
+        );
       } else {
         this.logger.error('Error in setWatch:', e);
       }

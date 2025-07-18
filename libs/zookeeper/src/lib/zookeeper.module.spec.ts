@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ZookeeperModule } from './zookeeper.module';
+import { ZookeeperModuleOptions } from './zookeeper-module.options';
 import { ZookeeperClient } from './zookeeper.client';
 import { ZookeeperConfig } from './zookeeper.config';
-import { ZookeeperModuleOptions } from './zookeeper-module.options';
+import { ZookeeperModule } from './zookeeper.module';
 
 describe('ZookeeperModule', () => {
   let module: TestingModule;
@@ -44,7 +44,9 @@ describe('ZookeeperModule', () => {
     });
 
     it('should provide ZookeeperModuleOptions', async () => {
-      const options = module.get<ZookeeperModuleOptions>('ZOOKEEPER_CONFIG_OPTIONS');
+      const options = module.get<ZookeeperModuleOptions>(
+        'ZOOKEEPER_CONFIG_OPTIONS',
+      );
       expect(options).toBeDefined();
       expect(options).toEqual(mockOptions);
     });
@@ -52,7 +54,7 @@ describe('ZookeeperModule', () => {
     it('should configure ZookeeperClient with provided options', async () => {
       const client = module.get<ZookeeperClient>(ZookeeperClient);
       const config = module.get<ZookeeperConfig>(ZookeeperConfig);
-      
+
       expect(config).toBeDefined();
       // The client should be configured with the provided options
       expect(client).toBeDefined();
@@ -72,7 +74,9 @@ describe('ZookeeperModule', () => {
       }).compile();
 
       const client = module.get<ZookeeperClient>(ZookeeperClient);
-      const options = module.get<ZookeeperModuleOptions>('ZOOKEEPER_CONFIG_OPTIONS');
+      const options = module.get<ZookeeperModuleOptions>(
+        'ZOOKEEPER_CONFIG_OPTIONS',
+      );
 
       expect(client).toBeDefined();
       expect(options).toEqual(differentOptions);
@@ -266,9 +270,7 @@ describe('ZookeeperModule', () => {
   describe('integration scenarios', () => {
     it('should work with multiple module imports', async () => {
       module = await Test.createTestingModule({
-        imports: [
-          ZookeeperModule.forRoot(mockOptions),
-        ],
+        imports: [ZookeeperModule.forRoot(mockOptions)],
       }).compile();
 
       const client = module.get<ZookeeperClient>(ZookeeperClient);
@@ -296,4 +298,4 @@ describe('ZookeeperModule', () => {
       await module2.close();
     });
   });
-}); 
+});
