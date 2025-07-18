@@ -5,7 +5,7 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { enableKillGracefully } from '@swft-mt/common';
+import { enableKillGracefully } from '@nexuskit/common';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {

@@ -1,4 +1,4 @@
-import { LoadBalancerClient } from '@swft-mt/loadbalancer';
+import { LoadBalancerClient } from '@nexuskit/loadbalancer';
 import { ClientOptions } from './interfaces';
 import { HttpClient } from './transports/http.client';
 

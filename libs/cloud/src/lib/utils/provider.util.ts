@@ -1,6 +1,6 @@
 import { Provider } from '@nestjs/common';
 import { loadPackage } from '@nestjs/common/utils/load-package.util';
-import { SERVICE_REGISTRY_CONFIG, ServiceStore } from '@swft-mt/common';
+import { SERVICE_REGISTRY_CONFIG, ServiceStore } from '@nexuskit/common';
 import { RegistryConfiguration } from '../interfaces';
 import { validateRegistryOptions } from './validate-registry-options.util';
 
@@ -16,7 +16,7 @@ export function getSharedProviderUtils(
   };
 
   if (registryOption.discoverer === 'consul') {
-    const { ConsulServiceRegistry } = require('@swft-mt/consul');
+    const { ConsulServiceRegistry } = require('@nexuskit/consul');
 
     configProvider.useValue = {
       service: registryOption.service,
@@ -30,9 +30,9 @@ export function getSharedProviderUtils(
     sharedProviders.push(ConsulServiceRegistry);
   } else if (registryOption.discoverer === 'zookeeper') {
     const importPackage = loadPackage(
-      '@swft-mt/zookeeper',
-      '@swft-mt/common',
-      () => require('@swft-mt/zookeeper'),
+      '@nexuskit/zookeeper',
+      '@nexuskit/common',
+      () => require('@nexuskit/zookeeper'),
     );
 
     configProvider.useValue = {

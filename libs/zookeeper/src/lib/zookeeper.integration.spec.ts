@@ -6,7 +6,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { ServiceStore } from '@swft-mt/common';
+import { ServiceStore } from '@nexuskit/common';
 import { ZookeeperDiscoveryClient } from './discovery/zookeeper-discovery.client';
 import { ZookeeperServiceRegistry } from './service-registry/zookeeper-service-registry';
 import { ZookeeperModuleOptions } from './zookeeper-module.options';

@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { HttpClient, HttpServiceClient } from '@swft-mt/client';
+import { HttpClient, HttpServiceClient } from '@nexuskit/client';
 import { AppService } from './app.service';
 
 @Controller()

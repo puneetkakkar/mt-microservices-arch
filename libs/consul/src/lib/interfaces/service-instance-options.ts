@@ -1,4 +1,4 @@
-import { ServiceInstanceState } from '@swft-mt/common';
+import { ServiceInstanceState } from '@nexuskit/common';
 
 /**
  * Service instance options

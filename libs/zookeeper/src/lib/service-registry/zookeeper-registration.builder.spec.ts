@@ -1,4 +1,4 @@
-import { HeartbeatOptions } from '@swft-mt/common';
+import { HeartbeatOptions } from '@nexuskit/common';
 import { ZookeeperDiscoveryOptions } from './zookeeper-discovery.options';
 import { ZookeeperRegistrationBuilder } from './zookeeper-registration.builder';
 

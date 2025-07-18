@@ -1,4 +1,4 @@
-import { ServiceInstance } from '@swft-mt/common';
+import { ServiceInstance } from '@nexuskit/common';
 import { BaseStrategy } from '..//base.strategy';
 
 export interface ServiceInstanceChooser {

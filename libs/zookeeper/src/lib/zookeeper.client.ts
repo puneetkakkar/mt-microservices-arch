@@ -4,7 +4,7 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
-import { handleRetry } from '@swft-mt/common';
+import { handleRetry } from '@nexuskit/common';
 import { merge } from 'lodash';
 import { defer, EMPTY, lastValueFrom } from 'rxjs';
 import ZooKeeper from 'zookeeper';

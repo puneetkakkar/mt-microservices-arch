@@ -1,6 +1,9 @@
 import { Logger } from '@nestjs/common';
-import { ServiceInstance } from '@swft-mt/common';
-import { LoadBalancerClient, LoadBalancerRequest } from '@swft-mt/loadbalancer';
+import { ServiceInstance } from '@nexuskit/common';
+import {
+  LoadBalancerClient,
+  LoadBalancerRequest,
+} from '@nexuskit/loadbalancer';
 import got, * as Got from 'got';
 import { merge } from 'lodash';
 import { HttpGotOptions, IHttpServiceClient } from '../interfaces';

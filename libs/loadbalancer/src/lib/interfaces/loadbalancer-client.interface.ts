@@ -1,4 +1,4 @@
-import { ServiceInstance } from '@swft-mt/common';
+import { ServiceInstance } from '@nexuskit/common';
 import { LoadBalancerRequest } from '../core/loadbalancer.request';
 
 export interface ILoadBalancerClient {
@@ -23,6 +23,6 @@ export interface ILoadBalancerClient {
   execute<T>(
     serviceId: string,
     node: ServiceInstance,
-    request: LoadBalancerRequest<T>
+    request: LoadBalancerRequest<T>,
   ): T;
 }

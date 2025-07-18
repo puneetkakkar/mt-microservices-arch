@@ -1,4 +1,4 @@
-import { PlainObject } from '@swft-mt/common';
+import { PlainObject } from '@nexuskit/common';
 
 export interface ServiceInstance {
   /**

@@ -1,8 +1,8 @@
-import { ServiceInstance, ServiceStatus } from '@swft-mt/common';
+import { ServiceInstance, ServiceStatus } from '@nexuskit/common';
 import { ConsulServiceInstance } from '../service-discovery/consul-service.instance';
 
 export function consulServiceToServiceInstance(
-  nodes: any[]
+  nodes: any[],
 ): ServiceInstance[] {
   const serviceInstances: ConsulServiceInstance[] = [];
   for (const node of nodes) {
@@ -34,7 +34,7 @@ export function consulServiceToServiceInstance(
         secure: node.Service.Meta.Secure || false,
         serviceId: node.Service.Service,
         tags: node.Service.Tags,
-      })
+      }),
     );
   }
 

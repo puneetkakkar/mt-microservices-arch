@@ -1,4 +1,4 @@
-import { BaseClientOptions } from '@swft-mt/common';
+import { BaseClientOptions } from '@nexuskit/common';
 
 export interface ZookeeperModuleOptions extends BaseClientOptions {
   host: string;

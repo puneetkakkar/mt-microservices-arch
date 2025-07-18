@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { HeartbeatOptions } from '@swft-mt/common';
+import { HeartbeatOptions } from '@nexuskit/common';
 import { HeartbeatTask } from '../interfaces';
 
 const tasks = new Map<string, any>();
@@ -7,7 +7,7 @@ const tasks = new Map<string, any>();
 export class TtlScheduler {
   constructor(
     private heartbeatOptions: HeartbeatOptions,
-    private task: HeartbeatTask
+    private task: HeartbeatTask,
   ) {}
 
   /**

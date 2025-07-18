@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { IReactiveClient } from '@swft-mt/common';
+import { IReactiveClient } from '@nexuskit/common';
 import * as Consul from 'consul';
 import {
   Acl,
@@ -17,7 +17,8 @@ import { ConsulConfig } from './consul.config';
 
 @Injectable()
 export class ConsulClient
-  implements IReactiveClient<Consul.Consul>, Consul.Consul, OnModuleInit {
+  implements IReactiveClient<Consul.Consul>, Consul.Consul, OnModuleInit
+{
   public consul: Consul.Consul;
 
   acl: Acl;
@@ -66,7 +67,7 @@ export class ConsulClient
       Logger.log('Consul Client starting...');
 
       // Create the consul instance
-      this.consul = Consul({
+      this.consul = new Consul.default({
         ...this.options.config,
         promisify: true,
       });

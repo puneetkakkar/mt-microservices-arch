@@ -1,5 +1,5 @@
 {
-  "name": "@swft-mt/consul",
+  "name": "@nexuskit/consul",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/consul/src",
   "projectType": "library",

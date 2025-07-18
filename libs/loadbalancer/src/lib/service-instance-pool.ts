@@ -1,9 +1,9 @@
-import { ServiceInstance } from '@swft-mt/common';
+import { ServiceInstance } from '@nexuskit/common';
 
 export class ServiceInstancePool {
   constructor(
     private readonly serviceName: string,
-    private readonly nodes: Array<ServiceInstance & { weight?: number }>
+    private readonly nodes: Array<ServiceInstance & { weight?: number }>,
   ) {}
 
   get serviceId(): string {

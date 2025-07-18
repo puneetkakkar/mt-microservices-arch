@@ -1,4 +1,4 @@
-import { HeartbeatOptions, Service } from '@swft-mt/common';
+import { HeartbeatOptions, Service } from '@nexuskit/common';
 import { ConsulDiscoveryOptions } from './consul-discovery.options';
 
 export interface ConsulRegistryOptions {

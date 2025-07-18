@@ -1,4 +1,4 @@
-import { DiscoveryOptions, Service } from '@swft-mt/common';
+import { DiscoveryOptions, Service } from '@nexuskit/common';
 import { HeartbeatOptions } from './heartbeat-options.interface';
 
 export interface BaseRegistryOption {

@@ -1,5 +1,9 @@
 import { Logger } from '@nestjs/common';
-import { DiscoveryClient, PlainObject, ServiceInstance } from '@swft-mt/common';
+import {
+  DiscoveryClient,
+  PlainObject,
+  ServiceInstance,
+} from '@nexuskit/common';
 import { flatten } from 'lodash';
 import { ZookeeperClient } from '../zookeeper.client';
 import { ZookeeperServiceInstance } from './zookeeper-service.instance';

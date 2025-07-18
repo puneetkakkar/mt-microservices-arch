@@ -15,13 +15,13 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@swft-mt/bootstrap": ["libs/bootstrap/src/index.ts"],
-      "@swft-mt/client": ["libs/client/src/index.ts"],
-      "@swft-mt/cloud": ["libs/cloud/src/index.ts"],
-      "@swft-mt/common": ["libs/common/src/index.ts"],
-      "@swft-mt/consul": ["libs/consul/src/index.ts"],
-      "@swft-mt/loadbalancer": ["libs/loadbalancer/src/index.ts"],
-      "@swft-mt/zookeeper": ["libs/zookeeper/src/index.ts"]
+      "@nexuskit/bootstrap": ["libs/bootstrap/src/index.ts"],
+      "@nexuskit/client": ["libs/client/src/index.ts"],
+      "@nexuskit/cloud": ["libs/cloud/src/index.ts"],
+      "@nexuskit/common": ["libs/common/src/index.ts"],
+      "@nexuskit/consul": ["libs/consul/src/index.ts"],
+      "@nexuskit/loadbalancer": ["libs/loadbalancer/src/index.ts"],
+      "@nexuskit/zookeeper": ["libs/zookeeper/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist", "tmp"]

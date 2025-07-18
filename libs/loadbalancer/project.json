@@ -1,5 +1,5 @@
 {
-  "name": "@swft-mt/loadbalancer",
+  "name": "@nexuskit/loadbalancer",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/loadbalancer/src",
   "projectType": "library",

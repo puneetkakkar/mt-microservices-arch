@@ -1,5 +1,5 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { LoadBalancerClient } from '@swft-mt/loadbalancer';
+import { LoadBalancerClient } from '@nexuskit/loadbalancer';
 import { ClientFactory } from './client.factory';
 import { Client } from './interfaces';
 import { ClientMetadata } from './interfaces/client-metadata.interface';
